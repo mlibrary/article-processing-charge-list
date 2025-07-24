@@ -1,0 +1,29 @@
+<!doctype html>
+<html lange="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APC Journals List</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+          var header = ["Publisher", "Journal Title", "eISSN", "Amount Funded", "Campuses Covered", "Link to Agreement", "Coverage Years"];
+          var columns = header.map(function(col) {
+            return { title: col };
+          });
+          $('#apcTable').DataTable({
+            ajax: "data.json",
+            columns: columns,
+            pageLength: 50,
+            lengthMenu: [10, 25, 50, 100],
+            order: [[1, 'asc']]
+          });
+        });
+    </script>
+  </head>
+  <body>
+    <table id="apcTable" class="display" width="100%"></table>
+  </body>
+</html>

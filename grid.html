@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>APC Journals</title>
+    <script type="text/javascript" src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css">
+    <script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+      var header = ["Publisher", "Journal Title", "eISSN", "Amount Funded", "Campuses Covered", "Link to Agreement", "Coverage Years"];
+      var grid = new gridjs.Grid({
+        "columns": header,
+        "pagination": { "limit": 50 },
+        "search": true,
+        "sort": true,
+        "server": {
+          "url": "https://bertrama.www.lib.umich.edu/apc-journals/data.json",
+          "then": function(data) { return data.data; }
+        }
+      }).render(document.getElementById("table"));
+});
+    </script>
+  </head>
+  <body>
+    <table id="table"></table>
+  </body>
+</html>
