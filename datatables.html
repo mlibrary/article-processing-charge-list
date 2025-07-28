@@ -16,14 +16,15 @@
           $('#apcTable').DataTable({
             ajax: "data.json",
             columns: columns,
-            pageLength: 50,
+            pageLength: 25,
             lengthMenu: [10, 25, 50, 100],
+            //scrollY: "200px",
             order: [[1, 'asc']]
           });
         });
     </script>
   </head>
   <body>
-    <table id="apcTable" class="display" width="100%"></table>
+    <table id="apcTable" class="display cell-border" width="100%"></table>
   </body>
 </html>
