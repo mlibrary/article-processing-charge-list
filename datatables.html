@@ -21,6 +21,23 @@
     .dt-length > label {
       margin-left: 10px;
     }
+    
+    #publisherFilters {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    
+    .publisher-checkbox {
+      margin-bottom: 5px;
+    }
+    
+    .publisher-checkbox label {
+      font-weight: normal;
+      margin-left: 5px;
+    }
   </style>
 </head>
 
@@ -66,8 +83,16 @@
         { title: "Coverage Years", data: 6 },
         { title: "Link to Agreement", data: 5 }
       ];
-      $('#apcTable').DataTable({
-        ajax: "data.json",
+      
+      var table = $('#apcTable').DataTable({
+        ajax: {
+          url: "data.json",
+          dataSrc: function(json) {
+            // Populate publisher checkboxes after data is loaded
+            populatePublisherFilters(json.data);
+            return json.data;
+          }
+        },
         columns: columns,
         pageLength: 5,
         lengthMenu: [5, 10, 25, 50],
@@ -92,6 +117,68 @@
             }
           }
         ]
+      });
+
+      // Function to populate publisher filter checkboxes
+      function populatePublisherFilters(data) {
+        var publishers = [];
+        
+        // Extract unique publishers
+        data.forEach(function(row) {
+          var publisher = row[0]; // Publisher is at index 0 in the data
+          if (publisher && publishers.indexOf(publisher) === -1) {
+            publishers.push(publisher);
+          }
+        });
+        
+        publishers.sort();
+        
+        var filtersHtml = '';
+        publishers.forEach(function(publisher, index) {
+          filtersHtml += '<div class="col-md-4 col-sm-6 publisher-checkbox">';
+          filtersHtml += '<input type="checkbox" id="pub_' + index + '" value="' + publisher + '" checked>';
+          filtersHtml += '<label for="pub_' + index + '">' + publisher + '</label>';
+          filtersHtml += '</div>';
+        });
+        
+        $('#publisherFilters').html(filtersHtml);
+        
+        $('#publisherFilters input[type="checkbox"]').on('change', function() {
+          filterTable();
+        });
+      }
+
+      function filterTable() {
+        var selectedPublishers = [];
+        $('#publisherFilters input[type="checkbox"]:checked').each(function() {
+          selectedPublishers.push($(this).val());
+        });
+        
+        // tap into DT search
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+          if (settings.nTable.id !== 'apcTable') {
+            return true;
+          }
+          
+          var publisher = data[2]; // Publisher column is at display index 2
+          
+          if (selectedPublishers.length === 0) {
+            return false; // No publishers selected
+          }
+          
+          return selectedPublishers.indexOf(publisher) !== -1;
+        });
+        
+        table.draw();
+        
+        // Remove the custom search function to avoid conflicts
+        $.fn.dataTable.ext.search.pop();
+      }
+
+      // Clear all filters button
+      $('#clearFilters').on('click', function() {
+        $('#publisherFilters input[type="checkbox"]').prop('checked', true);
+        filterTable();
       });
     });
   </script>
