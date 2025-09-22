@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "search": true,
         "sort": true,
         "server": {
-          "url": "https://bertrama.www.lib.umich.edu/apc-journals/data.json",
+          "url": "data.json",
           "then": function(data) { return data.data; }
         }
       }).render(document.getElementById("table"));

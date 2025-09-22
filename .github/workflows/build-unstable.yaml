@@ -2,8 +2,6 @@ name: Build unstable image on push to main
 
 on:
   push:
-    branches:
-    - main
     paths-ignore:
     - "README.md"
 
