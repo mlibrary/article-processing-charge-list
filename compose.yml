@@ -1,0 +1,10 @@
+---
+services:
+  web:
+    build:
+      target: development
+      context: .
+    ports:
+    - "3000:80"
+    volumes:
+    - ./html:/usr/local/apache2/htdocs
