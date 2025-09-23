@@ -39,6 +39,112 @@
       font-weight: normal;
       margin-left: 5px;
     }
+
+    .footer {
+      background: var(--color-blue-400);
+    }
+
+    .footer ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .footer ul a {
+      display: inline-block;
+      padding: .25rem 0;
+    }
+
+    .footer ul a:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+    }
+
+    .footer ul a span:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+    }
+
+    .footer a {
+      color: white;
+    }
+
+    .footer a>svg {
+      margin-right: 0.5em;
+    }
+
+    .address {
+      max-width: 22ch;
+    }
+
+    .footer__content {
+      color: var(--color-blue-100);
+      padding: 3rem 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 350px);
+      gap: 3rem;
+    }
+
+    .footer__content .first-column ul li a {
+      text-decoration: none;
+      display: flex;
+      align-items: baseline;
+    }
+
+    .footer__content ul li a {
+      text-decoration: none;
+    }
+
+    .footer__content h2 {
+      color: var(--color-blue-200);
+      font-size: 0.875rem;
+      font-weight: 800;
+      letter-spacing: 1.25px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .footer__policies {
+      border-left: solid 1px var(--color-blue-300);
+      padding-left: 2em;
+    }
+
+    @media screen and (max-width: 1200px) {
+      .footer__policies {
+        border-left: none;
+        padding-left: 0;
+      }
+    }
+
+    .footer__disclaimer {
+      background: var(--color-blue-500);
+      color: var(--color-blue-200);
+      padding: 1rem 0;
+    }
+
+    .footer__disclaimer a {
+      color: var(--color-blue-200);
+    }
+
+    .footer__disclaimer p {
+      margin: 0;
+    }
+
+    @media screen and (max-width:40rem) {
+      .footer__disclaimer p {
+        padding-top: 0.5rem;
+      }
+    }
+
+    @media screen and (min-width: 820px) {
+      .footer__disclaimer p {
+        display: inline-block;
+      }
+
+      .footer__disclaimer p+p {
+        margin-left: 2rem;
+      }
+    }
   </style>
 </head>
 
@@ -58,16 +164,71 @@
         with questions</p>
 
       <!-- Publisher Filter -->
-      <div class="mb-4">
-        <h5>Filter by Publisher:</h5>
-        <div id="publisherFilters" class="row">
-          <!-- Checkboxes will be populated here -->
+      <div class="mb-4 d-flex flex-wrap gap-3">
+        <div>
+          <h5>Filter by Publisher:</h5>
+          <div class="dropdown d-inline-block me-3">
+            <button class="button button--primary" type="button" id="publisherDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              Select Publishers
+            </button>
+            <ul class="dropdown-menu p-3" aria-labelledby="publisherDropdown" style="min-width: 300px; max-height: 300px; overflow-y: auto;">
+              <li id="publisherDropdownContent"><!-- Options will be populated here --></li>
+            </ul>
+          </div>
         </div>
-        <button id="clearFilters" class="btn btn-secondary btn-sm mt-2">Clear All Filters</button>
+        <div>
+          <h5>Filter by Campus:</h5>
+          <div class="dropdown d-inline-block">
+            <button class="button button--primary" type="button" id="campusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              Select Campuses
+            </button>
+            <ul class="dropdown-menu p-3" aria-labelledby="campusDropdown" style="min-width: 300px; max-height: 300px; overflow-y: auto;">
+              <li id="campusDropdownContent"><!-- Options will be populated here --></li>
+            </ul>
+          </div>
+        </div>
       </div>
       <table id="apcTable" class="m-table m-table--responsive-small"></table>
     </div>
   </main>
+  <footer class="footer" id="footer">
+    <div class="viewport-container">
+      <div class="footer__content">
+        <section class="first-column">
+          <h2>University of Michigan Library</h2>
+          <ul>
+            <li><a href="https://lib.umich.edu/"><span class="address">913 S. University Avenue Ann Arbor, MI
+                  48109-1190</span></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Heading Column 2</h2>
+          <ul>
+            <li><a href="#">List item link</a></li>
+            <li><a href="#">List item link</a></li>
+            <li><a href="#">List item link</a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Heading Column 3</h2>
+          <ul>
+            <li><a href="#">List item link</a></li>
+            <li><a href="#">List item link</a></li>
+            <li><a href="#">List item link</a></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+    <div class="footer__disclaimer">
+      <div class="viewport-container">
+        <p>© 2025, Regents of the University of Michigan</p>
+        <p>
+          Built with the
+          <a href="https://design-system.lib.umich.edu/">U-M Library Design System</a>
+        </p>
+      </div>
+    </div>
+  </footer>
 
   <script type="module"
     src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"></script>
@@ -79,6 +240,7 @@
     crossorigin="anonymous"></script>
   <script type="text/javascript">
     $(document).ready(function () {
+      var rawData = [];
       var header = ["Journal Title", "eISSN", "Publisher", "Amount Funded", "Campuses Covered", "Coverage Years", "Link to Agreement"];
       var columns = [
         { title: "Journal Title", data: 1 },
@@ -90,12 +252,67 @@
         { title: "Link to Agreement", data: 5 }
       ];
 
+  // Store selected publishers and campuses globally for the filter function
+  var selectedPublishers = [];
+  var selectedCampuses = [];
+
+      $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        if (settings.nTable.id !== 'apcTable') {
+          return true;
+        }
+        var publisher = rawData[dataIndex] ? rawData[dataIndex][0] : '';
+        var campuses = rawData[dataIndex] ? rawData[dataIndex][4] : '';
+        // Publisher filter
+        if (selectedPublishers.length === 0) {
+          return false;
+        }
+        if (selectedPublishers.indexOf(publisher) === -1) {
+          return false;
+        }
+        // Campus filter
+        if (selectedCampuses.length > 0) {
+          var campusList = campuses.split(/,\s*/);
+          var found = campusList.some(function (campus) {
+            return selectedCampuses.indexOf(campus) !== -1;
+          });
+          if (!found) return false;
+        }
+        return true;
+      });
+
       var table = $('#apcTable').DataTable({
         ajax: {
           url: "data.json",
           dataSrc: function (json) {
-            // Populate publisher checkboxes after data is loaded
+            rawData = json.data; // Store the raw data globally
             populatePublisherFilters(json.data);
+            populateCampusFilters(json.data);
+            // Initialize selectedPublishers to all publishers on first load
+            if (selectedPublishers.length === 0) {
+              var allPublishers = [];
+              json.data.forEach(function (row) {
+                var publisher = row[0];
+                if (publisher && allPublishers.indexOf(publisher) === -1) {
+                  allPublishers.push(publisher);
+                }
+              });
+              selectedPublishers = allPublishers;
+            }
+            // Initialize selectedCampuses to all campuses on first load
+            if (selectedCampuses.length === 0) {
+              var allCampuses = [];
+              json.data.forEach(function (row) {
+                var campuses = row[4];
+                if (campuses) {
+                  campuses.split(/,\s*/).forEach(function (campus) {
+                    if (campus && allCampuses.indexOf(campus) === -1) {
+                      allCampuses.push(campus);
+                    }
+                  });
+                }
+              });
+              selectedCampuses = allCampuses;
+            }
             return json.data;
           }
         },
@@ -105,11 +322,11 @@
         order: [[1, 'asc']],
         autoWidth: false,
         language: {
-          search: "Search by Journal Title or eISSN (i.e., 0010-0285):"
+          search: "Search by Journal Title, eISSN, or Campus (i.e., 0010-0285):"
         },
         columnDefs: [
           {
-            "targets": [2, 3, 4, 5, 6], // search only against journal title and eISSN
+            "targets": [3, 5, 6], // search only against journal title, eISSN, and campuses
             "searchable": false
           },
           {
@@ -124,70 +341,114 @@
           }
         ]
       });
+      function populateCampusFilters(data) {
+        var campuses = [];
+        data.forEach(function (row) {
+          var campusField = row[4];
+          if (campusField) {
+            campusField.split(/,\s*/).forEach(function (campus) {
+              if (campus && campuses.indexOf(campus) === -1) {
+                campuses.push(campus);
+              }
+            });
+          }
+        });
+        campuses.sort();
 
-      // Function to populate publisher filter checkboxes
+        var filtersHtml = '';
+        // Apply/Remove All options
+        filtersHtml += '<div class="d-flex align-items-center mb-2">'
+          + '<button type="button" class="btn btn-link p-0 me-2" id="applyAllCampuses"><b>Apply All</b></button>'
+          + '<button type="button" class="btn btn-link p-0" id="removeAllCampuses"><b>Remove All</b></button>'
+          + '</div>';
+        filtersHtml += '<hr class="my-2">';
+        // Campus checkboxes
+        campuses.forEach(function (campus, index) {
+          filtersHtml += '<div class="form-check">';
+          filtersHtml += '<input class="form-check-input campus-checkbox" type="checkbox" id="campus_' + index + '" value="' + campus + '" checked>';
+          filtersHtml += '<label class="form-check-label" for="campus_' + index + '">' + campus + '</label>';
+          filtersHtml += '</div>';
+        });
+        $('#campusDropdownContent').html(filtersHtml);
+
+        // Checkbox change event
+        $('.campus-checkbox').on('change', function () {
+          filterTable();
+        });
+        // Apply All
+        $('#applyAllCampuses').on('click', function (e) {
+          e.preventDefault();
+          $('.campus-checkbox').prop('checked', true);
+          filterTable();
+        });
+        // Remove All
+        $('#removeAllCampuses').on('click', function (e) {
+          e.preventDefault();
+          $('.campus-checkbox').prop('checked', false);
+          filterTable();
+        });
+      }
+
       function populatePublisherFilters(data) {
         var publishers = [];
-
-        // Extract unique publishers
         data.forEach(function (row) {
-          var publisher = row[0]; // Publisher is at index 0 in the data
+          var publisher = row[0];
           if (publisher && publishers.indexOf(publisher) === -1) {
             publishers.push(publisher);
           }
         });
-
         publishers.sort();
 
         var filtersHtml = '';
+        // Apply/Remove All options
+        filtersHtml += '<div class="d-flex align-items-center mb-2">'
+          + '<button type="button" class="btn btn-link p-0 me-2" id="applyAllPublishers"><b>Apply All</b></button>'
+          + '<button type="button" class="btn btn-link p-0" id="removeAllPublishers"><b>Remove All</b></button>'
+          + '</div>';
+        filtersHtml += '<hr class="my-2">';
+        // Publisher checkboxes
         publishers.forEach(function (publisher, index) {
-          filtersHtml += '<div class="col-md-4 col-sm-6 publisher-checkbox">';
-          filtersHtml += '<input type="checkbox" id="pub_' + index + '" value="' + publisher + '" checked>';
-          filtersHtml += '<label for="pub_' + index + '">' + publisher + '</label>';
+          filtersHtml += '<div class="form-check">';
+          filtersHtml += '<input class="form-check-input publisher-checkbox" type="checkbox" id="pub_' + index + '" value="' + publisher + '" checked>';
+          filtersHtml += '<label class="form-check-label" for="pub_' + index + '">' + publisher + '</label>';
           filtersHtml += '</div>';
         });
+        $('#publisherDropdownContent').html(filtersHtml);
 
-        $('#publisherFilters').html(filtersHtml);
-
-        $('#publisherFilters input[type="checkbox"]').on('change', function () {
+        // Checkbox change event
+        $('.publisher-checkbox').on('change', function () {
+          filterTable();
+        });
+        // Apply All
+        $('#applyAllPublishers').on('click', function (e) {
+          e.preventDefault();
+          $('.publisher-checkbox').prop('checked', true);
+          filterTable();
+        });
+        // Remove All
+        $('#removeAllPublishers').on('click', function (e) {
+          e.preventDefault();
+          $('.publisher-checkbox').prop('checked', false);
           filterTable();
         });
       }
 
       function filterTable() {
-        var selectedPublishers = [];
-        $('#publisherFilters input[type="checkbox"]:checked').each(function () {
+        selectedPublishers = [];
+        $('.publisher-checkbox:checked').each(function () {
           selectedPublishers.push($(this).val());
         });
-
-        // tap into DT search
-        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-          if (settings.nTable.id !== 'apcTable') {
-            return true;
-          }
-
-          var publisher = data[2]; // Publisher column is at display index 2
-
-          if (selectedPublishers.length === 0) {
-            return false; // No publishers selected
-          }
-
-          return selectedPublishers.indexOf(publisher) !== -1;
+        selectedCampuses = [];
+        $('.campus-checkbox:checked').each(function () {
+          selectedCampuses.push($(this).val());
         });
-
         table.draw();
-
-        // Remove the custom search function to avoid conflicts
-        $.fn.dataTable.ext.search.pop();
       }
 
-      // Clear all filters button
-      $('#clearFilters').on('click', function () {
-        $('#publisherFilters input[type="checkbox"]').prop('checked', true);
-        filterTable();
-      });
+      // Remove legacy clearFilters button event (no longer needed)
     });
   </script>
 </body>
+
 
 </html>
