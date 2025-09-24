@@ -10,7 +10,21 @@
   <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.3.2/datatables.min.css" rel="stylesheet"
     integrity="sha384-dG72sN6C6+JA9moN/5eRa0GqXlYOpTivxgRRV4rTctUeb4ZNF6uuJ5NXmz+8+3Qi" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css" rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=open_in_new" />
+
   <style>
+    .material-symbols-rounded {
+      font-size: 16px;
+      padding-left:3px;
+      vertical-align: middle;
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+
     #apcTable th:nth-child(7),
     #apcTable td:nth-child(7) {
       width: 150px !important;
@@ -339,7 +353,7 @@
             "width": "150px",
             "render": function (data, type, row) {
               if (type === 'display' && data) {
-                return '<a href="' + data + '" target="_blank">' + data + '</a>';
+                return '<a href="' + data + '" target="_blank">View<span class="material-symbols-rounded">open_in_new</span></a>';
               }
               return data;
             }
