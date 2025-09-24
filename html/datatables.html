@@ -10,8 +10,7 @@
   <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.3.2/datatables.min.css" rel="stylesheet"
     integrity="sha384-dG72sN6C6+JA9moN/5eRa0GqXlYOpTivxgRRV4rTctUeb4ZNF6uuJ5NXmz+8+3Qi" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css" rel="stylesheet" />
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
   <link rel="icon" href="https://lib.umich.edu/favicon-32x32.png?v=f982c23145a9b92a0f61861d4dfbbe2a" type="image/png">
   <link rel="stylesheet" href="../css/styles.css">
 </head>
@@ -30,42 +29,10 @@
         affiliated with the University of Michigan. We recommend corresponding authors use their UMich email address to
         avoid delays in the verification process. Email <a href="mailto:lib-oa-pub@umich.edu">lib-oa-pub@umich.edu</a>
         with questions</p>
-
-      <div class="mb-4 d-flex flex-wrap gap-3">
-        <div class="d-flex flex-column">
-          <label>Filter by Publisher:</label>
-          <div class="dropdown d-inline-block me-3">
-            <button class="button button--secondary" type="button" id="publisherDropdown" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              Select Publishers 
-              <span class="material-symbols-rounded dropdown-icon">
-                arrow_drop_down
-              </span>
-            </button>
-            <ul class="dropdown-menu p-3" aria-labelledby="publisherDropdown"
-              style="min-width: 300px; max-height: 300px; overflow-y: auto;">
-              <li id="publisherDropdownContent"></li>
-            </ul>
-          </div>
-        </div>
-        <div class="d-flex flex-column">
-          <label>Filter by Campus:</label>
-          <div class="dropdown d-inline-block">
-            <button class="button button--secondary" type="button" id="campusDropdown" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              Select Campuses
-              <span class="material-symbols-rounded dropdown-icon">
-                arrow_drop_down
-              </span>
-            </button>
-            <ul class="dropdown-menu p-3" aria-labelledby="campusDropdown"
-              style="min-width: 300px; max-height: 300px; overflow-y: auto;">
-              <li id="campusDropdownContent"></li>
-            </ul>
-          </div>
-        </div>
+      <hr class="horizontal-line" />
+      <div style="overflow-x: auto; width: 100%;">
+        <table id="apcTable" class="m-table m-table--responsive-small" style="min-width: 800px;"></table>
       </div>
-      <table id="apcTable" class="m-table m-table--responsive-small"></table>
     </div>
   </main>
   <footer class="footer mt-20" id="footer">
@@ -115,7 +82,7 @@
   <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.3.2/datatables.min.js"
     integrity="sha384-qLLX0jMaWXMZrun5/ry13tv5MX78CJNleGaaJVXRuJCDiAwyjhYWsTM3Qk3VaKC3"
     crossorigin="anonymous"></script>
-    <script src="../js/script.js"></script>
+  <script src="../js/script.js"></script>
 </body>
 
 

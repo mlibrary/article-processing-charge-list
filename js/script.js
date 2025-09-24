@@ -13,6 +13,8 @@ $(document).ready(function () {
 
     var selectedPublishers = [];
     var selectedCampuses = [];
+    var allPublishersCount = 0;
+    var allCampusesCount = 0;
 
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         if (settings.nTable.id !== 'apcTable') {
@@ -39,8 +41,27 @@ $(document).ready(function () {
     });
 
     var table = $('#apcTable').DataTable({
-        layout:{
-            top1Start: 'search',
+        layout: {
+            top4Start: function () {
+                let filterContainer = document.createElement('div');
+                filterContainer.innerHTML = '<h2>Search and Filter</h2>';
+                return filterContainer;
+            },
+            top3Start: {
+                search: {
+                    placeholder: 'Search by Journal Title, or eISSN (i.e., 0010-0285):',
+                }
+            },
+            top2Start: function () {
+                let filterContainer = document.createElement('div');
+                filterContainer.innerHTML = CreateFilterContainer();
+                return filterContainer;
+            },
+            top1: function(){
+                let separator = document.createElement('hr');
+                separator.className = 'horizontal-line-dt mb-4';
+                return separator;
+            },
             topStart: 'info',
             topEnd: 'pageLength',
             bottomStart: 'info',
@@ -85,7 +106,7 @@ $(document).ready(function () {
         order: [[1, 'asc']],
         autoWidth: false,
         language: {
-            search: "Search by Journal Title, or eISSN (i.e., 0010-0285):"
+            search: ""
         },
         columnDefs: [
             {
@@ -117,6 +138,7 @@ $(document).ready(function () {
             }
         });
         campuses.sort();
+        allCampusesCount = campuses.length;
 
         var filtersHtml = '';
         filtersHtml += '<div class="d-flex align-items-center mb-2">'
@@ -160,6 +182,7 @@ $(document).ready(function () {
             }
         });
         publishers.sort();
+        allPublishersCount = publishers.length;
 
         var filtersHtml = '';
         filtersHtml += '<div class="d-flex align-items-center mb-2">'
@@ -203,6 +226,65 @@ $(document).ready(function () {
         $('.campus-checkbox:checked').each(function () {
             selectedCampuses.push($(this).val());
         });
+        updateFilterSummary();
         table.draw();
     }
+
+    function updateFilterSummary() {
+        var pubCount = selectedPublishers.length;
+        var campusCount = selectedCampuses.length;
+        var show = (pubCount !== allPublishersCount || campusCount !== allCampusesCount);
+        if (show) {
+            var text = 'Filtering by ' + pubCount + ' publisher' + (pubCount !== 1 ? 's' : '') +
+                ' and ' + campusCount + ' campus' + (campusCount !== 1 ? 'es' : '');
+            $('#filterSummaryText').text(text);
+            $('#filterSummaryContainer').show();
+        } else {
+            $('#filterSummaryContainer').hide();
+        }
+    }
+
+    // Clear all filters button logic
+    $(document).on('click', '#clearAllFiltersBtn', function () {
+        $('.publisher-checkbox, .campus-checkbox').prop('checked', true);
+        filterTable();
+    });
 });
+
+function CreateFilterContainer() {
+    return `
+        <div class="mb-2 mt-2 ms-1 d-flex flex-wrap gap-3">
+          <div class="d-flex flex-column">
+            <label>Filter by Publisher:</label>
+            <div class="dropdown d-inline-block me-3">
+              <button class="button button--secondary" type="button" id="publisherDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Select Publishers
+                <span class="material-symbols-rounded dropdown-icon">
+                  arrow_drop_down
+                </span>
+              </button>
+              <ul class="dropdown-menu p-3" aria-labelledby="publisherDropdown"
+                style="min-width: 300px; max-height: 300px; overflow-y: auto;">
+                <li id="publisherDropdownContent"></li>
+              </ul>
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <label>Filter by Campus:</label>
+            <div class="dropdown d-inline-block">
+              <button class="button button--secondary" type="button" id="campusDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Select Campuses
+                <span class="material-symbols-rounded dropdown-icon">
+                  arrow_drop_down
+                </span>
+              </button>
+              <ul class="dropdown-menu p-3" aria-labelledby="campusDropdown"
+                style="min-width: 300px; max-height: 300px; overflow-y: auto;">
+                <li id="campusDropdownContent"></li>
+              </ul>
+            </div>
+        </div>
+          `
+}
