@@ -12,159 +12,10 @@
   <link href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css" rel="stylesheet" />
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=open_in_new" />
-
-  <style>
-    .material-symbols-rounded {
-      font-size: 16px;
-      padding-left:3px;
-      vertical-align: middle;
-      font-variation-settings:
-        'FILL' 0,
-        'wght' 400,
-        'GRAD' 0,
-        'opsz' 24
-    }
-
-    #apcTable th:nth-child(7),
-    #apcTable td:nth-child(7) {
-      width: 150px !important;
-      max-width: 150px !important;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-
-    .dt-length>label {
-      margin-left: 10px;
-    }
-
-    #publisherFilters {
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-    .button--primary {
-      background: var(--color-teal-400);
-      color: #fff;
-    }
-
-    .publisher-checkbox {
-      margin-bottom: 5px;
-    }
-
-    .publisher-checkbox label {
-      font-weight: normal;
-      margin-left: 5px;
-    }
-
-    .footer {
-      background: var(--color-blue-400);
-    }
-
-    .footer ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .footer ul a {
-      display: inline-block;
-      padding: .25rem 0;
-    }
-
-    .footer ul a:hover {
-      text-decoration: underline;
-      text-decoration-thickness: 1px;
-    }
-
-    .footer ul a span:hover {
-      text-decoration: underline;
-      text-decoration-thickness: 1px;
-    }
-
-    .footer a {
-      color: white;
-    }
-
-    .footer a>svg {
-      margin-right: 0.5em;
-    }
-
-    .address {
-      max-width: 22ch;
-    }
-
-    .footer__content {
-      color: var(--color-blue-100);
-      padding: 3rem 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, 350px);
-      gap: 3rem;
-    }
-
-    .footer__content .first-column ul li a {
-      text-decoration: none;
-      display: flex;
-      align-items: baseline;
-    }
-
-    .footer__content ul li a {
-      text-decoration: none;
-    }
-
-    .footer__content h2 {
-      color: var(--color-blue-200);
-      font-size: 0.875rem;
-      font-weight: 800;
-      letter-spacing: 1.25px;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-
-    .footer__policies {
-      border-left: solid 1px var(--color-blue-300);
-      padding-left: 2em;
-    }
-
-    @media screen and (max-width: 1200px) {
-      .footer__policies {
-        border-left: none;
-        padding-left: 0;
-      }
-    }
-
-    .footer__disclaimer {
-      background: var(--color-blue-500);
-      color: var(--color-blue-200);
-      padding: 1rem 0;
-    }
-
-    .footer__disclaimer a {
-      color: var(--color-blue-200);
-    }
-
-    .footer__disclaimer p {
-      margin: 0;
-    }
-
-    @media screen and (max-width:40rem) {
-      .footer__disclaimer p {
-        padding-top: 0.5rem;
-      }
-    }
-
-    @media screen and (min-width: 820px) {
-      .footer__disclaimer p {
-        display: inline-block;
-      }
-
-      .footer__disclaimer p+p {
-        margin-left: 2rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_drop_down" />
+  <link rel="icon" href="https://lib.umich.edu/favicon-32x32.png?v=f982c23145a9b92a0f61861d4dfbbe2a" type="image/png">
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body>
@@ -186,9 +37,12 @@
         <div>
           <h5>Filter by Publisher:</h5>
           <div class="dropdown d-inline-block me-3">
-            <button class="button button--primary" type="button" id="publisherDropdown" data-bs-toggle="dropdown"
+            <button class="button button--secondary" type="button" id="publisherDropdown" data-bs-toggle="dropdown"
               aria-expanded="false">
-              Select Publishers
+              Select Publishers 
+              <span class="material-symbols-rounded dropdown-icon">
+                arrow_drop_down
+              </span>
             </button>
             <ul class="dropdown-menu p-3" aria-labelledby="publisherDropdown"
               style="min-width: 300px; max-height: 300px; overflow-y: auto;">
@@ -199,9 +53,12 @@
         <div>
           <h5>Filter by Campus:</h5>
           <div class="dropdown d-inline-block">
-            <button class="button button--primary" type="button" id="campusDropdown" data-bs-toggle="dropdown"
+            <button class="button button--secondary" type="button" id="campusDropdown" data-bs-toggle="dropdown"
               aria-expanded="false">
               Select Campuses
+              <span class="material-symbols-rounded dropdown-icon">
+                arrow_drop_down
+              </span>
             </button>
             <ul class="dropdown-menu p-3" aria-labelledby="campusDropdown"
               style="min-width: 300px; max-height: 300px; overflow-y: auto;">
@@ -260,201 +117,7 @@
   <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.3.2/datatables.min.js"
     integrity="sha384-qLLX0jMaWXMZrun5/ry13tv5MX78CJNleGaaJVXRuJCDiAwyjhYWsTM3Qk3VaKC3"
     crossorigin="anonymous"></script>
-  <script type="text/javascript">
-    $(document).ready(function () {
-      var rawData = [];
-      var header = ["Journal Title", "eISSN", "Publisher", "Amount Funded", "Campuses Covered", "Coverage Years", "Link to Agreement"];
-      var columns = [
-        { title: "Journal Title", data: 1 },
-        { title: "eISSN", data: 2 },
-        { title: "Publisher", data: 0 },
-        { title: "Amount Funded", data: 3 },
-        { title: "Campuses Covered", data: 4 },
-        { title: "Coverage Years", data: 6 },
-        { title: "Link to Agreement", data: 5 }
-      ];
-
-      var selectedPublishers = [];
-      var selectedCampuses = [];
-
-      $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-        if (settings.nTable.id !== 'apcTable') {
-          return true;
-        }
-        var publisher = rawData[dataIndex] ? rawData[dataIndex][0] : '';
-        var campuses = rawData[dataIndex] ? rawData[dataIndex][4] : '';
-        // Publisher filter
-        if (selectedPublishers.length === 0) {
-          return false;
-        }
-        if (selectedPublishers.indexOf(publisher) === -1) {
-          return false;
-        }
-        // Campus filter
-        if (selectedCampuses.length > 0) {
-          var campusList = campuses.split(/,\s*/);
-          var found = campusList.some(function (campus) {
-            return selectedCampuses.indexOf(campus) !== -1;
-          });
-          if (!found) return false;
-        }
-        return true;
-      });
-
-      var table = $('#apcTable').DataTable({
-        ajax: {
-          url: "data.json",
-          dataSrc: function (json) {
-            rawData = json.data;
-            populatePublisherFilters(json.data);
-            populateCampusFilters(json.data);
-            if (selectedPublishers.length === 0) {
-              var allPublishers = [];
-              json.data.forEach(function (row) {
-                var publisher = row[0];
-                if (publisher && allPublishers.indexOf(publisher) === -1) {
-                  allPublishers.push(publisher);
-                }
-              });
-              selectedPublishers = allPublishers;
-            }
-            if (selectedCampuses.length === 0) {
-              var allCampuses = [];
-              json.data.forEach(function (row) {
-                var campuses = row[4];
-                if (campuses) {
-                  campuses.split(/,\s*/).forEach(function (campus) {
-                    if (campus && allCampuses.indexOf(campus) === -1) {
-                      allCampuses.push(campus);
-                    }
-                  });
-                }
-              });
-              selectedCampuses = allCampuses;
-            }
-            return json.data;
-          }
-        },
-        columns: columns,
-        pageLength: 5,
-        lengthMenu: [5, 10, 25, 50],
-        order: [[1, 'asc']],
-        autoWidth: false,
-        language: {
-          search: "Search by Journal Title, eISSN, or Campus (i.e., 0010-0285):"
-        },
-        columnDefs: [
-          {
-            "targets": [3, 5, 6],
-            "searchable": false
-          },
-          {
-            "targets": 6,
-            "width": "150px",
-            "render": function (data, type, row) {
-              if (type === 'display' && data) {
-                return '<a href="' + data + '" target="_blank">View<span class="material-symbols-rounded">open_in_new</span></a>';
-              }
-              return data;
-            }
-          }
-        ]
-      });
-      function populateCampusFilters(data) {
-        var campuses = [];
-        data.forEach(function (row) {
-          var campusField = row[4];
-          if (campusField) {
-            campusField.split(/,\s*/).forEach(function (campus) {
-              if (campus && campuses.indexOf(campus) === -1) {
-                campuses.push(campus);
-              }
-            });
-          }
-        });
-        campuses.sort();
-
-        var filtersHtml = '';
-        filtersHtml += '<div class="d-flex align-items-center mb-2">'
-          + '<button type="button" class="btn btn-link p-0 me-2" id="applyAllCampuses"><b>Apply All</b></button>'
-          + '<button type="button" class="btn btn-link p-0" id="removeAllCampuses"><b>Remove All</b></button>'
-          + '</div>';
-        filtersHtml += '<hr class="my-2">';
-        campuses.forEach(function (campus, index) {
-          filtersHtml += '<div class="form-check">';
-          filtersHtml += '<input class="form-check-input campus-checkbox" type="checkbox" id="campus_' + index + '" value="' + campus + '" checked>';
-          filtersHtml += '<label class="form-check-label" for="campus_' + index + '">' + campus + '</label>';
-          filtersHtml += '</div>';
-        });
-        $('#campusDropdownContent').html(filtersHtml);
-
-        $('.campus-checkbox').on('change', function () {
-          filterTable();
-        });
-        $('#applyAllCampuses').on('click', function (e) {
-          e.preventDefault();
-          $('.campus-checkbox').prop('checked', true);
-          filterTable();
-        });
-        $('#removeAllCampuses').on('click', function (e) {
-          e.preventDefault();
-          $('.campus-checkbox').prop('checked', false);
-          filterTable();
-        });
-      }
-
-      function populatePublisherFilters(data) {
-        var publishers = [];
-        data.forEach(function (row) {
-          var publisher = row[0];
-          if (publisher && publishers.indexOf(publisher) === -1) {
-            publishers.push(publisher);
-          }
-        });
-        publishers.sort();
-
-        var filtersHtml = '';
-        filtersHtml += '<div class="d-flex align-items-center mb-2">'
-          + '<button type="button" class="btn btn-link p-0 me-2" id="applyAllPublishers"><b>Apply All</b></button>'
-          + '<button type="button" class="btn btn-link p-0" id="removeAllPublishers"><b>Remove All</b></button>'
-          + '</div>';
-        filtersHtml += '<hr class="my-2">';
-        publishers.forEach(function (publisher, index) {
-          filtersHtml += '<div class="form-check">';
-          filtersHtml += '<input class="form-check-input publisher-checkbox" type="checkbox" id="pub_' + index + '" value="' + publisher + '" checked>';
-          filtersHtml += '<label class="form-check-label" for="pub_' + index + '">' + publisher + '</label>';
-          filtersHtml += '</div>';
-        });
-        $('#publisherDropdownContent').html(filtersHtml);
-
-        $('.publisher-checkbox').on('change', function () {
-          filterTable();
-        });
-        $('#applyAllPublishers').on('click', function (e) {
-          e.preventDefault();
-          $('.publisher-checkbox').prop('checked', true);
-          filterTable();
-        });
-        $('#removeAllPublishers').on('click', function (e) {
-          e.preventDefault();
-          $('.publisher-checkbox').prop('checked', false);
-          filterTable();
-        });
-      }
-
-      function filterTable() {
-        selectedPublishers = [];
-        $('.publisher-checkbox:checked').each(function () {
-          selectedPublishers.push($(this).val());
-        });
-        selectedCampuses = [];
-        $('.campus-checkbox:checked').each(function () {
-          selectedCampuses.push($(this).val());
-        });
-        table.draw();
-      }
-    });
-  </script>
+    <script src="../js/script.js"></script>
 </body>
 
 
