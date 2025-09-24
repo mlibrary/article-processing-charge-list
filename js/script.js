@@ -39,6 +39,13 @@ $(document).ready(function () {
     });
 
     var table = $('#apcTable').DataTable({
+        layout:{
+            top1Start: 'search',
+            topStart: 'info',
+            topEnd: 'pageLength',
+            bottomStart: 'info',
+            bottomEnd: 'paging'
+        },
         ajax: {
             url: "data.json",
             dataSrc: function (json) {
@@ -73,12 +80,12 @@ $(document).ready(function () {
             }
         },
         columns: columns,
-        pageLength: 5,
+        pageLength: 10,
         lengthMenu: [5, 10, 25, 50],
         order: [[1, 'asc']],
         autoWidth: false,
         language: {
-            search: "Search by Journal Title, eISSN, or Campus (i.e., 0010-0285):"
+            search: "Search by Journal Title, or eISSN (i.e., 0010-0285):"
         },
         columnDefs: [
             {
@@ -118,9 +125,9 @@ $(document).ready(function () {
             + '</div>';
         filtersHtml += '<hr class="my-2">';
         campuses.forEach(function (campus, index) {
-            filtersHtml += '<div class="form-check">';
-            filtersHtml += '<input class="form-check-input campus-checkbox" type="checkbox" id="campus_' + index + '" value="' + campus + '" checked>';
-            filtersHtml += '<label class="form-check-label" for="campus_' + index + '">' + campus + '</label>';
+            filtersHtml += '<div class="checkbox-option">';
+            filtersHtml += '<input class="campus-checkbox" type="checkbox" id="campus_' + index + '" value="' + campus + '" checked>';
+            filtersHtml += '<label for="campus_' + index + '">' + campus + '</label>';
             filtersHtml += '</div>';
         });
         $('#campusDropdownContent').html(filtersHtml);
