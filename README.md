@@ -5,7 +5,11 @@ Generating the data.json file:
 ```ruby
 require 'json'
 docs = []
-File.open("apc.tsv").each_line { |line| docs << line.chomp.split("\t") }
+File.open(Dir.glob("*.tsv").first).each_line do |line|
+   row = line.chomp.split("\t")
+   next if row.empty?
+   docs << [row[0], row[1], row[2], row[3], row[6], row[7], row[8], row[6].include?("Ann Arbor") , row[6].include?("Flint"), row[6].include?("Dearborn")]
+end
 docs.shift
-File.write("data.json", {data: docs}.to_json)
+File.write("html/data.json", {data: docs}.to_json)
 ```
