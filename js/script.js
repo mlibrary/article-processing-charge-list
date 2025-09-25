@@ -55,9 +55,18 @@ $(document).ready(function () {
             top2Start: function () {
                 let filterContainer = document.createElement('div');
                 filterContainer.innerHTML = CreateFilterContainer();
+                let summaryDiv = document.createElement('div');
+                summaryDiv.id = 'filterSummaryContainer';
+                summaryDiv.style.minHeight = '2.2em'; // Reserve space for summary
+                summaryDiv.style.display = 'flex';
+                summaryDiv.style.alignItems = 'center';
+                summaryDiv.innerHTML = '<span id="filterSummaryText"></span>' +
+                    '<button id="clearAllFiltersBtn" class="anchor-button">Clear all filters</button>';
+                summaryDiv.style.visibility = 'hidden'; // Initially hidden
+                filterContainer.appendChild(summaryDiv);
                 return filterContainer;
             },
-            top1: function(){
+            top1: function () {
                 let separator = document.createElement('hr');
                 separator.className = 'horizontal-line-dt mb-4';
                 return separator;
@@ -68,7 +77,7 @@ $(document).ready(function () {
             bottomEnd: 'paging'
         },
         ajax: {
-            url: "data.json",
+            url: "https://raw.githubusercontent.com/mlibrary/article-processing-charge-list/refs/heads/separate-campus-columns/html/data.json",
             dataSrc: function (json) {
                 rawData = json.data;
                 populatePublisherFilters(json.data);
@@ -118,10 +127,14 @@ $(document).ready(function () {
                 "width": "150px",
                 "render": function (data, type, row) {
                     if (type === 'display' && data) {
-                        return '<a href="' + data + '" target="_blank">View<span class="material-symbols-rounded">open_in_new</span></a>';
+                        return '<a href="' + data + '" target="_blank">Agreement for ' + row[0] + '<span class="material-symbols-rounded">open_in_new</span></a>';
                     }
                     return data;
                 }
+            },
+            {
+                "targets": [7, 8, 9],
+                "visible": false
             }
         ]
     });
@@ -154,7 +167,6 @@ $(document).ready(function () {
         });
         $('#campusDropdownContent').html(filtersHtml);
 
-        // Prevent dropdown from closing on checkbox/label/button click
         $('#campusDropdownContent').on('click', 'input, label, button', function (e) {
             e.stopPropagation();
         });
@@ -198,7 +210,6 @@ $(document).ready(function () {
         });
         $('#publisherDropdownContent').html(filtersHtml);
 
-        // Prevent dropdown from closing on checkbox/label/button click
         $('#publisherDropdownContent').on('click', 'input, label, button', function (e) {
             e.stopPropagation();
         });
@@ -226,11 +237,11 @@ $(document).ready(function () {
         $('.campus-checkbox:checked').each(function () {
             selectedCampuses.push($(this).val());
         });
-        updateFilterSummary();
+        renderFilterSummary();
         table.draw();
     }
 
-    function updateFilterSummary() {
+    function renderFilterSummary() {
         var pubCount = selectedPublishers.length;
         var campusCount = selectedCampuses.length;
         var show = (pubCount !== allPublishersCount || campusCount !== allCampusesCount);
@@ -238,13 +249,19 @@ $(document).ready(function () {
             var text = 'Filtering by ' + pubCount + ' publisher' + (pubCount !== 1 ? 's' : '') +
                 ' and ' + campusCount + ' campus' + (campusCount !== 1 ? 'es' : '');
             $('#filterSummaryText').text(text);
-            $('#filterSummaryContainer').show();
+            $('#filterSummaryContainer').css('visibility', 'visible');
         } else {
-            $('#filterSummaryContainer').hide();
+            $('#filterSummaryText').text('');
+            $('#filterSummaryContainer').css('visibility', 'hidden');
         }
     }
 
-    // Clear all filters button logic
+
+    $(document).on('click', '#clearAllFiltersBtn', function () {
+        $('.publisher-checkbox, .campus-checkbox').prop('checked', true);
+        filterTable();
+    });
+
     $(document).on('click', '#clearAllFiltersBtn', function () {
         $('.publisher-checkbox, .campus-checkbox').prop('checked', true);
         filterTable();
@@ -286,5 +303,6 @@ function CreateFilterContainer() {
               </ul>
             </div>
         </div>
+
           `
 }
