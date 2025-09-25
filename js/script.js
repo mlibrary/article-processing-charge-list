@@ -77,7 +77,7 @@ $(document).ready(function () {
             bottomEnd: 'paging'
         },
         ajax: {
-            url: "https://raw.githubusercontent.com/mlibrary/article-processing-charge-list/refs/heads/separate-campus-columns/html/data.json",
+            url: "data.json",
             dataSrc: function (json) {
                 rawData = json.data;
                 populatePublisherFilters(json.data);
@@ -131,10 +131,6 @@ $(document).ready(function () {
                     }
                     return data;
                 }
-            },
-            {
-                "targets": [7, 8, 9],
-                "visible": false
             }
         ]
     });
