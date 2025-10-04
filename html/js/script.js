@@ -15,6 +15,7 @@ $(document).ready(function () {
     var selectedCampuses = [];
     var allPublishersCount = 0;
     var allCampusesCount = 0;
+    var onlyFullyFunded = false; // state for 100% funded filter
 
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         if (settings.nTable.id !== 'apcTable') {
@@ -22,6 +23,7 @@ $(document).ready(function () {
         }
         var publisher = rawData[dataIndex] ? rawData[dataIndex][0] : '';
         var campuses = rawData[dataIndex] ? rawData[dataIndex][4] : '';
+    var amountFunded = rawData[dataIndex] ? rawData[dataIndex][3] : '';
         // Publisher filter
         if (selectedPublishers.length === 0) {
             return false;
@@ -36,6 +38,22 @@ $(document).ready(function () {
                 return selectedCampuses.indexOf(campus) !== -1;
             });
             if (!found) return false;
+        }
+        // 100% funded filter
+        if (onlyFullyFunded) {
+            var normalized = '' + amountFunded;
+            normalized = normalized.trim();
+            normalized = normalized.replace(/[$,\s]/g, '');
+            var isHundred = false;
+            if (/^100%?$/.test(normalized)) {
+                isHundred = true;
+            } else {
+                var num = parseFloat(normalized.replace(/%/, ''));
+                if (!isNaN(num) && num === 100) {
+                    isHundred = true;
+                }
+            }
+            if (!isHundred) return false;
         }
         return true;
     });
@@ -57,12 +75,12 @@ $(document).ready(function () {
                 filterContainer.innerHTML = CreateFilterContainer();
                 let summaryDiv = document.createElement('div');
                 summaryDiv.id = 'filterSummaryContainer';
-                summaryDiv.style.minHeight = '2.2em'; // Reserve space for summary
+                summaryDiv.style.minHeight = '2.2em';
                 summaryDiv.style.display = 'flex';
                 summaryDiv.style.alignItems = 'center';
                 summaryDiv.innerHTML = '<span id="filterSummaryText"></span>' +
                     '<button id="clearAllFiltersBtn" class="anchor-button">Clear all filters</button>';
-                summaryDiv.style.visibility = 'hidden'; // Initially hidden
+                summaryDiv.style.visibility = 'hidden';
                 filterContainer.appendChild(summaryDiv);
                 return filterContainer;
             },
@@ -134,6 +152,11 @@ $(document).ready(function () {
             }
         ]
     });
+
+    $(document).on('change', '#onlyFullyFundedCheckbox', function () {
+        onlyFullyFunded = this.checked;
+        filterTable();
+    });
     function populateCampusFilters(data) {
         var campuses = [];
         data.forEach(function (row) {
@@ -162,23 +185,6 @@ $(document).ready(function () {
             filtersHtml += '</div>';
         });
         $('#campusDropdownContent').html(filtersHtml);
-
-        $('#campusDropdownContent').on('click', 'input, label, button', function (e) {
-            e.stopPropagation();
-        });
-        $('.campus-checkbox').on('change', function () {
-            filterTable();
-        });
-        $('#applyAllCampuses').on('click', function (e) {
-            e.preventDefault();
-            $('.campus-checkbox').prop('checked', true);
-            filterTable();
-        });
-        $('#removeAllCampuses').on('click', function (e) {
-            e.preventDefault();
-            $('.campus-checkbox').prop('checked', false);
-            filterTable();
-        });
     }
 
     function populatePublisherFilters(data) {
@@ -205,23 +211,6 @@ $(document).ready(function () {
             filtersHtml += '</div>';
         });
         $('#publisherDropdownContent').html(filtersHtml);
-
-        $('#publisherDropdownContent').on('click', 'input, label, button', function (e) {
-            e.stopPropagation();
-        });
-        $('.publisher-checkbox').on('change', function () {
-            filterTable();
-        });
-        $('#applyAllPublishers').on('click', function (e) {
-            e.preventDefault();
-            $('.publisher-checkbox').prop('checked', true);
-            filterTable();
-        });
-        $('#removeAllPublishers').on('click', function (e) {
-            e.preventDefault();
-            $('.publisher-checkbox').prop('checked', false);
-            filterTable();
-        });
     }
 
     function filterTable() {
@@ -240,10 +229,15 @@ $(document).ready(function () {
     function renderFilterSummary() {
         var pubCount = selectedPublishers.length;
         var campusCount = selectedCampuses.length;
-        var show = (pubCount !== allPublishersCount || campusCount !== allCampusesCount);
+        var show = (pubCount !== allPublishersCount || campusCount !== allCampusesCount || onlyFullyFunded);
         if (show) {
-            var text = 'Filtering by ' + pubCount + ' publisher' + (pubCount !== 1 ? 's' : '') +
-                ' and ' + campusCount + ' campus' + (campusCount !== 1 ? 'es' : '');
+            var parts = [];
+            parts.push(pubCount + ' publisher' + (pubCount !== 1 ? 's' : ''));
+            parts.push(campusCount + ' campus' + (campusCount !== 1 ? 'es' : ''));
+            if (onlyFullyFunded) {
+                parts.push('only 100% covered');
+            }
+            var text = 'Filtering by ' + parts.join(' and ');
             $('#filterSummaryText').text(text);
             $('#filterSummaryContainer').css('visibility', 'visible');
         } else {
@@ -255,11 +249,37 @@ $(document).ready(function () {
 
     $(document).on('click', '#clearAllFiltersBtn', function () {
         $('.publisher-checkbox, .campus-checkbox').prop('checked', true);
+        $('#onlyFullyFundedCheckbox').prop('checked', false);
+        onlyFullyFunded = false;
         filterTable();
     });
 
-    $(document).on('click', '#clearAllFiltersBtn', function () {
-        $('.publisher-checkbox, .campus-checkbox').prop('checked', true);
+    $(document).on('click', '#publisherDropdownContent input, #publisherDropdownContent label, #publisherDropdownContent button, #campusDropdownContent input, #campusDropdownContent label, #campusDropdownContent button', function (e) {
+        e.stopPropagation();
+    });
+
+    $(document).on('change', '.publisher-checkbox, .campus-checkbox', function () {
+        filterTable();
+    });
+
+    $(document).on('click', '#applyAllPublishers', function (e) {
+        e.preventDefault();
+        $('.publisher-checkbox').prop('checked', true);
+        filterTable();
+    });
+    $(document).on('click', '#removeAllPublishers', function (e) {
+        e.preventDefault();
+        $('.publisher-checkbox').prop('checked', false);
+        filterTable();
+    });
+    $(document).on('click', '#applyAllCampuses', function (e) {
+        e.preventDefault();
+        $('.campus-checkbox').prop('checked', true);
+        filterTable();
+    });
+    $(document).on('click', '#removeAllCampuses', function (e) {
+        e.preventDefault();
+        $('.campus-checkbox').prop('checked', false);
         filterTable();
     });
 });
@@ -300,5 +320,14 @@ function CreateFilterContainer() {
             </div>
         </div>
 
+                    <div class="d-flex align-items-center ms-1 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="onlyFullyFundedCheckbox" />
+                            <label class="form-check-label" for="onlyFullyFundedCheckbox">Show only 100% covered</label>
+                        </div>
+                    </div>
+
           `
 }
+
+// (Moved onlyFullyFundedCheckbox handler inside document ready for cohesion)
