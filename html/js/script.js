@@ -287,47 +287,46 @@ $(document).ready(function () {
 function CreateFilterContainer() {
     return `
         <div class="mb-2 mt-2 ms-1 d-flex flex-wrap gap-3">
-          <div class="d-flex flex-column">
-            <label>Filter by Publisher:</label>
-            <div class="dropdown d-inline-block me-3">
-              <button class="button button--secondary" type="button" id="publisherDropdown" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Select Publishers
-                <span class="material-symbols-rounded dropdown-icon">
-                  arrow_drop_down
-                </span>
-              </button>
-              <ul class="dropdown-menu p-3" aria-labelledby="publisherDropdown"
-                style="min-width: 300px; max-height: 300px; overflow-y: auto;">
-                <li id="publisherDropdownContent"></li>
-              </ul>
+            <div class="d-flex flex-column">
+                <label>Filter by Publisher:</label>
+                <div class="dropdown d-inline-block me-3">
+                <button class="button button--secondary" type="button" id="publisherDropdown" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Select Publishers
+                    <span class="material-symbols-rounded dropdown-icon">
+                    arrow_drop_down
+                    </span>
+                </button>
+                <ul class="dropdown-menu p-3" aria-labelledby="publisherDropdown"
+                    style="min-width: 300px; max-height: 300px; overflow-y: auto;">
+                    <li id="publisherDropdownContent"></li>
+                </ul>
+                </div>
             </div>
-          </div>
-          <div class="d-flex flex-column">
-            <label>Filter by Campus:</label>
-            <div class="dropdown d-inline-block">
-              <button class="button button--secondary" type="button" id="campusDropdown" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Select Campuses
-                <span class="material-symbols-rounded dropdown-icon">
-                  arrow_drop_down
-                </span>
-              </button>
-              <ul class="dropdown-menu p-3" aria-labelledby="campusDropdown"
-                style="min-width: 300px; max-height: 300px; overflow-y: auto;">
-                <li id="campusDropdownContent"></li>
-              </ul>
+            <div class="d-flex flex-column">
+                <label>Filter by Campus:</label>
+                <div class="dropdown d-inline-block">
+                    <button class="button button--secondary" type="button" id="campusDropdown" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Select Campuses
+                        <span class="material-symbols-rounded dropdown-icon">
+                        arrow_drop_down
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu p-3" aria-labelledby="campusDropdown"
+                        style="min-width: 300px; max-height: 300px; overflow-y: auto;">
+                        <li id="campusDropdownContent"></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="d-flex align-items-center ms-1 mt-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="onlyFullyFundedCheckbox" />
+                    <label class="form-check-label" for="onlyFullyFundedCheckbox">Show only 100% covered</label>
+                </div>
             </div>
         </div>
-
-                    <div class="d-flex align-items-center ms-1 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="onlyFullyFundedCheckbox" />
-                            <label class="form-check-label" for="onlyFullyFundedCheckbox">Show only 100% covered</label>
-                        </div>
-                    </div>
-
-          `
+    `
 }
 
 // (Moved onlyFullyFundedCheckbox handler inside document ready for cohesion)
