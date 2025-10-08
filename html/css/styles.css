@@ -9,6 +9,10 @@
         'opsz' 24
 }
 
+.dt-search > label{
+  display: block;
+}
+
 .dropdown-icon {
     font-size: 1.2rem;
 }

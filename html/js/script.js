@@ -32,13 +32,14 @@ $(document).ready(function () {
             return false;
         }
         // Campus filter
-        if (selectedCampuses.length > 0) {
-            var campusList = campuses.split(/,\s*/);
-            var found = campusList.some(function (campus) {
-                return selectedCampuses.indexOf(campus) !== -1;
-            });
-            if (!found) return false;
+        if (selectedCampuses.length === 0) {
+            return false;
         }
+        var campusList = campuses.split(/,\s*/);
+        var found = campusList.some(function (campus) {
+            return selectedCampuses.indexOf(campus) !== -1;
+        });
+        if (!found) return false;
         // 100% funded filter
         if (onlyFullyFunded) {
             var normalized = '' + amountFunded;
@@ -67,7 +68,7 @@ $(document).ready(function () {
             },
             top3Start: {
                 search: {
-                    placeholder: 'Search by Journal Title, or eISSN (i.e., 0010-0285):',
+                    placeholder: 'Search',
                 }
             },
             top2Start: function () {
@@ -132,8 +133,9 @@ $(document).ready(function () {
         lengthMenu: [5, 10, 25, 50],
         order: [[1, 'asc']],
         autoWidth: false,
+        responsive: true,
         language: {
-            search: ""
+            search: "Search by Journal Title, or eISSN (i.e., 0010-0285):"
         },
         columnDefs: [
             {
