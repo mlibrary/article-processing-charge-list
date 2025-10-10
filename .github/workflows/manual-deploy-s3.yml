@@ -1,4 +1,4 @@
-name: Manual deploy production
+name: Manual deploy to S3
 
 on:
   workflow_dispatch:
@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: "Checkout"
       uses: actions/checkout@master
+      with:
+        ref: ${{ github.event.inputs.tag }}
     - name: Sync S3
       uses: jakejarvis/s3-sync-action@master
       with:
