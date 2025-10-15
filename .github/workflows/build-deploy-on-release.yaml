@@ -16,10 +16,14 @@ jobs:
 
 
   deploy-production:
-    needs: build-production
-    name: Deploy to production
-    uses: mlibrary/platform-engineering-workflows/.github/workflows/deploy.yml@v1
+    runs-on: ubuntu-latest
+    name: Sync S3
+    uses: jakejarvis/s3-sync-action@master
     with:
-      image: ghcr.io/mlibrary/${{ vars.IMAGE_NAME }}:${{ github.event.release.tag_name }}
-      file: ${{ vars.CONFIG_REPO_PRODUCTION_IMAGE_FILE }}
-    secrets: inherit
+      args: --follow-symlinks --delete
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      SOURCE_DIR: ${{ vars.SOURCE_DIR }}
