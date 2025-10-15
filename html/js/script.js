@@ -23,7 +23,7 @@ $(document).ready(function () {
         }
         var publisher = rawData[dataIndex] ? rawData[dataIndex][0] : '';
         var campuses = rawData[dataIndex] ? rawData[dataIndex][4] : '';
-    var amountFunded = rawData[dataIndex] ? rawData[dataIndex][3] : '';
+        var amountFunded = rawData[dataIndex] ? rawData[dataIndex][3] : '';
         // Publisher filter
         if (selectedPublishers.length === 0) {
             return false;
