@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Journals with APC Discounts or Waivers</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.3.2/datatables.min.css" rel="stylesheet"
+    integrity="sha384-dG72sN6C6+JA9moN/5eRa0GqXlYOpTivxgRRV4rTctUeb4ZNF6uuJ5NXmz+8+3Qi" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
+  <link rel="icon" href="https://lib.umich.edu/favicon-32x32.png?v=f982c23145a9b92a0f61861d4dfbbe2a" type="image/png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <m-universal-header></m-universal-header>
+  <div>
+    <m-website-header variant="dark">
+    </m-website-header>
+  </div>
+  <main>
+    <div class="viewport-container mt-5 mb-5">
+      <h1 class="mb-4">Journals with APC Discounts or Waivers</h1>
+      <p style="max-width:38rem;" class="mb-4">Search this list to determine if a journal is covered by an Article
+        Processing Charge (APC) agreement, and if so, how much funding is available when the corresponding author is
+        affiliated with the University of Michigan. We recommend corresponding authors use their UMich email address to
+        avoid delays in the verification process. Email <a href="mailto:lib-oa-pub@umich.edu">lib-oa-pub@umich.edu</a>
+        with questions</p>
+      <hr class="horizontal-line" />
+      <div style="overflow-x: auto; width: 100%;">
+        <table id="apcTable" class="m-table" style="min-width: 800px;"></table>
+      </div>
+    </div>
+  </main>
+  <footer class="footer mt-20" id="footer">
+    <div class="viewport-container">
+      <div class="footer__content">
+        <section class="first-column">
+          <h2>University of Michigan Library</h2>
+          <ul>
+            <li><a href="https://lib.umich.edu/"><span class="address">913 S. University Avenue Ann Arbor, MI
+                  48109-1190</span></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Contact Us</h2>
+          <ul>
+            <li><a href="mailto:lib-oa-pub@umich.edu">lib-oa-pub@umich.edu</a></li>
+            <li><a href="https://lib.umich.edu/about-us/about-library/accessibility">Accessibility</a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Heading Column 3</h2>
+          <ul>
+            <li><a href="#">List item link</a></li>
+            <li><a href="#">List item link</a></li>
+            <li><a href="#">List item link</a></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+    <div class="footer__disclaimer">
+      <div class="viewport-container">
+        <p>© 2025, Regents of the University of Michigan</p>
+        <p>
+          Built with the
+          <a href="https://design-system.lib.umich.edu/">U-M Library Design System</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module"
+    src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"
+    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.3.2/datatables.min.js"
+    integrity="sha384-qLLX0jMaWXMZrun5/ry13tv5MX78CJNleGaaJVXRuJCDiAwyjhYWsTM3Qk3VaKC3"
+    crossorigin="anonymous"></script>
+  <script src="js/script.js"></script>
+</body>
+
+
+</html>
