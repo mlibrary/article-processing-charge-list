@@ -8,3 +8,12 @@ services:
     - "3000:80"
     volumes:
     - ./html:/usr/local/apache2/htdocs
+
+  data:
+    image: ruby:3.4
+    working_dir: /usr/src/app
+    command: irb
+    volumes:
+    - .:/usr/src/app
+    profiles: ["data"]
+    user: "${UID:-1000}:${GID:-1000}"
