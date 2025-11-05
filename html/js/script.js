@@ -301,14 +301,13 @@ $(document).ready(function () {
         filterTable();
     });
 
-    // Handle clear filters button from empty state
     $(document).on('click', '#clearAllFiltersFromEmpty', function (e) {
         e.preventDefault();
         $('.publisher-checkbox, .campus-checkbox').prop('checked', true);
         $('#onlyFullyFundedCheckbox').prop('checked', false);
         onlyFullyFunded = false;
-        // Clear the search box
         table.search('').draw();
+        filterTable();
     });
 });
 
@@ -366,7 +365,7 @@ function CreateNoResultsMessage() {
                 <li style="color: var(--color-neutral-300); margin-bottom: 1rem;">
                     <strong>Journal Not Covered:</strong> The journal is not covered under centralized U-M Library or BTAA agreements. 
                     The journal may still be open access, but not managed through U-M Library and BTAA (Big Ten Academic Alliance) agreements. 
-                    Visit APC Discounts for U-M Authors for more information.
+                    Visit <a href="https://guides.lib.umich.edu/c.php?g=1329501&p=9791037">APC Discounts for U-M Authors</a> for more information.
                 </li>
                 <li style="color: var(--color-neutral-300); margin-bottom: 1rem;">
                     <strong>Too Many Filters:</strong> You may have selected a publisher or campus filter that excludes the journal you're searching for. 
