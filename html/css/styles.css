@@ -33,6 +33,16 @@
     overflow-wrap: break-word;
 }
 
+.info{
+  border: 1px solid var(--color-teal-200);
+  background-color: var(--color-teal-100);
+  padding: 1rem;
+}
+.info::before{
+  color: var(--color-teal-500);
+  margin-right: 0.5rem;
+}
+
 /*DataTables styles*/
 /* DataTables sorting arrows */
 /* Override DataTables default styles and opacity */

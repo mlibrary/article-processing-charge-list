@@ -1,14 +1,14 @@
 $(document).ready(function () {
     var rawData = [];
-    var header = ["Journal Title", "eISSN", "Publisher", "Amount Funded", "Campuses Covered", "Coverage Years", "Link to Agreement"];
+    var header = ["Journal Title", "eISSN", "Publisher", "Discount or Waiver Amount", "Campuses Covered", "Coverage Years", "Agreement Info"];
     var columns = [
         { title: "Journal Title", data: 1 },
         { title: "eISSN", data: 2 },
         { title: "Publisher", data: 0 },
-        { title: "Amount Funded", data: 3 },
+        { title: "Discount or Waiver Amount", data: 3 },
         { title: "Campuses Covered", data: 4 },
         { title: "Coverage Years", data: 6 },
-        { title: "Link to Agreement", data: 5 }
+        { title: "Agreement Info", data: 5 }
     ];
 
     var selectedPublishers = [];
@@ -61,17 +61,17 @@ $(document).ready(function () {
 
     var table = $('#apcTable').DataTable({
         layout: {
-            top4Start: function () {
+            top6Start: function () {
                 let filterContainer = document.createElement('div');
                 filterContainer.innerHTML = '<h2>Search and Filter</h2>';
                 return filterContainer;
             },
-            top3Start: {
+            top5Start: {
                 search: {
                     placeholder: 'Search',
                 }
             },
-            top2Start: function () {
+            top4Start: function () {
                 let filterContainer = document.createElement('div');
                 filterContainer.innerHTML = CreateFilterContainer();
                 let summaryDiv = document.createElement('div');
@@ -85,10 +85,20 @@ $(document).ready(function () {
                 filterContainer.appendChild(summaryDiv);
                 return filterContainer;
             },
-            top1: function () {
+            top3: function () {
                 let separator = document.createElement('hr');
                 separator.className = 'horizontal-line-dt mb-4';
                 return separator;
+            },
+            top2Start: function () {
+                let filterContainer = document.createElement('div');
+                filterContainer.innerHTML = '<h2>Search Results</h2>';
+                return filterContainer;
+            },
+            top1Start: function () {
+                let filterContainer = document.createElement('div');
+                filterContainer.innerHTML = '<div class="info">Learn more about <a href="#eissnInfo">EISSN</a>, <a href="#discountOrWaiverInfo">Discount or Waiver Amount</a>, and <a href="#coverageYearsInfo">Coverage Years</a>.</div>';
+                return filterContainer;
             },
             topStart: 'info',
             topEnd: 'pageLength',
@@ -135,7 +145,9 @@ $(document).ready(function () {
         autoWidth: false,
         responsive: true,
         language: {
-            search: "Search by Journal Title, or eISSN (i.e., 0010-0285):"
+            search: "Search by Journal Title, or eISSN (i.e., 0010-0285):",
+            emptyTable: CreateNoResultsMessage(),
+            zeroRecords: CreateNoResultsMessage(),
         },
         columnDefs: [
             {
@@ -284,6 +296,16 @@ $(document).ready(function () {
         $('.campus-checkbox').prop('checked', false);
         filterTable();
     });
+
+    // Handle clear filters button from empty state
+    $(document).on('click', '#clearAllFiltersFromEmpty', function (e) {
+        e.preventDefault();
+        $('.publisher-checkbox, .campus-checkbox').prop('checked', true);
+        $('#onlyFullyFundedCheckbox').prop('checked', false);
+        onlyFullyFunded = false;
+        // Clear the search box
+        table.search('').draw();
+    });
 });
 
 function CreateFilterContainer() {
@@ -331,4 +353,26 @@ function CreateFilterContainer() {
     `
 }
 
-// (Moved onlyFullyFundedCheckbox handler inside document ready for cohesion)
+function CreateNoResultsMessage() {
+    return `
+        <div style="text-align: center; padding: 2rem;">
+            <h3 style="color: var(--color-neutral-300); margin-bottom: 1rem;">No matching records found</h3>
+            <p style="color: var(--color-neutral-300); margin-bottom: 1.5rem;">Here are the most likely reasons:</p>
+            <ol style="color: var(--color-neutral-300); text-align: left; max-width: 600px; margin: 0 auto 1.5rem auto;">
+                <li style="color: var(--color-neutral-300); margin-bottom: 1rem;">
+                    <strong>Journal Not Covered:</strong> The journal is not covered under centralized U-M Library or BTAA agreements. 
+                    The journal may still be open access, but not managed through U-M Library and BTAA (Big Ten Academic Alliance) agreements. 
+                    Visit APC Discounts for U-M Authors for more information.
+                </li>
+                <li style="color: var(--color-neutral-300); margin-bottom: 1rem;">
+                    <strong>Too Many Filters:</strong> You may have selected a publisher or campus filter that excludes the journal you're searching for. 
+                    Try removing all active filters and searching again.
+                </li>
+                <li style="color: var(--color-neutral-300); margin-bottom: 1rem;">
+                    <strong>Typo or Variant of Title:</strong> Check the spelling or title, or verify the journal's EISSN and use that instead.
+                </li>
+            </ol>
+            <button id="clearAllFiltersFromEmpty" class="anchor-button">Clear all filters</button>
+        </div>
+    `;
+}
