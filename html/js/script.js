@@ -163,7 +163,7 @@ $(document).ready(function () {
                 "width": "150px",
                 "render": function (data, type, row) {
                     if (type === 'display' && data) {
-                        return '<a href="' + data + '" target="_blank">Agreement for ' + row[0] + '<span class="material-symbols-rounded">open_in_new</span></a>';
+                        return '<a href="' + data + '" target="_blank">Info about ' + row[0] + '<span class="material-symbols-rounded">open_in_new</span>' + ' agreement</a>';
                     }
                     return data;
                 }
