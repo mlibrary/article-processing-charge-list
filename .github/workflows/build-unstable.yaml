@@ -15,11 +15,12 @@ jobs:
       dockerfile: Dockerfile
     secrets: inherit
 
-  deploy-testing:
-    needs: build-unstable
-    name: Deploy to testing
-    uses: mlibrary/platform-engineering-workflows/.github/workflows/deploy.yml@v1
-    with:
-      image: ${{ needs.build-unstable.outputs.image }}
-      file: ${{ vars.CONFIG_REPO_TESTING_IMAGE_FILE }}
-    secrets: inherit
+# Commenting this out until we decide we need it.
+#  deploy-testing:
+#    needs: build-unstable
+#    name: Deploy to testing
+#    uses: mlibrary/platform-engineering-workflows/.github/workflows/deploy.yml@v1
+#    with:
+#      image: ${{ needs.build-unstable.outputs.image }}
+#      file: ${{ vars.CONFIG_REPO_TESTING_IMAGE_FILE }}
+#    secrets: inherit

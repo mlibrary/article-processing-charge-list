@@ -4,8 +4,10 @@ Generating the data.json file:
 
 ```ruby
 require 'json'
-docs = []
-File.open("apc.tsv").each_line { |line| docs << line.chomp.split("\t") }
-docs.shift
-File.write("data.json", {data: docs}.to_json)
+rows = []
+File.open("apc.tsv").each_line { |line| fields = line.chomp.split("\t") ; rows << fields[0..3] + fields[6..8] }
+rows.shift
+rows.compact!
+rows.reject! { |row| row.empty? || row.all?(&:empty?) }
+File.write("data.json", {data: rows.map { |row| row.map { |field| field.empty? ? nil : field }}}.to_json)
 ```
