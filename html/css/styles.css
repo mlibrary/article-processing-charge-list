@@ -34,6 +34,64 @@
 }
 
 /*DataTables styles*/
+/* DataTables sorting arrows */
+/* Override DataTables default styles and opacity */
+table.dataTable thead>tr>th.dt-orderable-asc span.dt-column-order:before, 
+table.dataTable thead>tr>th.dt-orderable-asc span.dt-column-order:after, 
+table.dataTable thead>tr>th.dt-orderable-desc span.dt-column-order:before, 
+table.dataTable thead>tr>th.dt-orderable-desc span.dt-column-order:after, 
+table.dataTable thead>tr>th.dt-ordering-asc span.dt-column-order:before, 
+table.dataTable thead>tr>th.dt-ordering-asc span.dt-column-order:after, 
+table.dataTable thead>tr>th.dt-ordering-desc span.dt-column-order:before, 
+table.dataTable thead>tr>th.dt-ordering-desc span.dt-column-order:after, 
+table.dataTable thead>tr>td.dt-orderable-asc span.dt-column-order:before, 
+table.dataTable thead>tr>td.dt-orderable-asc span.dt-column-order:after, 
+table.dataTable thead>tr>td.dt-orderable-desc span.dt-column-order:before, 
+table.dataTable thead>tr>td.dt-orderable-desc span.dt-column-order:after, 
+table.dataTable thead>tr>td.dt-ordering-asc span.dt-column-order:before, 
+table.dataTable thead>tr>td.dt-ordering-asc span.dt-column-order:after, 
+table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order:before, 
+table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order:after {
+  opacity: 1 !important;
+  left: 0 !important;
+  line-height: 9px !important;
+  font-size: .8em !important;
+}
+
+table.dataTable thead>tr>th.dt-orderable-asc span.dt-column-order:before,
+table.dataTable thead>tr>td.dt-orderable-asc span.dt-column-order:before {
+  content: "△" !important;
+  color: var(--color-teal-300) !important;
+}
+table.dataTable thead>tr>th.dt-orderable-desc span.dt-column-order:after,
+table.dataTable thead>tr>td.dt-orderable-desc span.dt-column-order:after {
+  content: "▽" !important;
+  color: var(--color-teal-300) !important;
+}
+
+table.dataTable thead>tr>th.dt-ordering-asc span.dt-column-order:before,
+table.dataTable thead>tr>td.dt-ordering-asc span.dt-column-order:before {
+  content: "▲" !important;
+  color: var(--color-teal-500) !important;
+}
+table.dataTable thead>tr>th.dt-ordering-asc span.dt-column-order:after,
+table.dataTable thead>tr>td.dt-ordering-asc span.dt-column-order:after {
+  content: "▽" !important;
+  color: var(--color-teal-300) !important;
+}
+
+table.dataTable thead>tr>th.dt-ordering-desc span.dt-column-order:before,
+table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order:before {
+  content: "△" !important;
+  color: var(--color-teal-300) !important;
+}
+table.dataTable thead>tr>th.dt-ordering-desc span.dt-column-order:after,
+table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order:after {
+  content: "▼" !important;
+  color: var(--color-teal-500) !important;
+}
+/* End DataTables sorting arrows */
+
 .dt-search > .dt-input{
     border-radius: 0;
     font-size: 1rem;
@@ -340,6 +398,7 @@ input[type="checkbox"] {
     height: 18px;
     margin-top: .4rem;
     margin-right: 0.75rem;
+    border-color: var(--color-neutral-300);
 }
 
 .checkbox-option {
@@ -348,10 +407,16 @@ input[type="checkbox"] {
     margin: .5rem 0 .5rem;
 }
 
+
 .checkbox-option>label {
     font-family: var(--font-base-family);
     color: var(--color-neutral-400);
     font-size: 1rem;
     font-weight: normal;
     display: block;
+}
+
+h1 {
+  max-width: 40ch;
+  text-indent: .55rem;
 }
