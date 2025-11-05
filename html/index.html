@@ -17,12 +17,20 @@
 
 <body>
   <m-universal-header></m-universal-header>
+  <div role="navigation" class="skip-links" aria-label="Skip links">
+    <div class="viewport-container">
+      <ul>
+        <li><a href="#maincontent">Skip to main content</a></li>
+        <li><a href="#searchandfilter">Skip to Search and Filter</a></li>
+      </ul>
+    </div>
+  </div>
   <div>
     <m-website-header variant="dark">
     </m-website-header>
   </div>
   <main>
-    <div class="viewport-container mt-5 mb-5">
+    <div class="viewport-container mt-5 mb-5" id="maincontent">
       <h1 class="mb-4">Journals with Article Processing Charge (APC) Agreements</h1>
       <p style="max-width:38rem;" class="mb-4">
         This site helps <strong>U-M affiliated authors</strong> at Ann Arbor, Dearborn, and Flint campuses find journals
@@ -52,14 +60,20 @@
       </div>
       <hr />
       <p style="max-width:38rem;" class="mb-4">
-        <strong id="eissnInfo">EISSNs</strong> link to supplemental information, including associated ISSNs under “Identifiers” and links to journal
-        websites (URLs) under “Links” on the left side of the screen.</p>
-      <p style="max-width:38rem;" class="mb-4">
-        <strong id="discountOrWaiverInfo">Discount or Waiver Amount</strong> may vary by article type. Check agreement info for details.</p>
-      <p style="max-width:38rem;" class="mb-4">
-        <strong id="coverageYearsInfo">Coverage Years</strong> generally apply to the article's acceptance date, though some publishers may use submission date.
+        <strong id="eissnInfo">EISSNs</strong> link to supplemental information, including associated ISSNs under
+        “Identifiers” and links to journal
+        websites (URLs) under “Links” on the left side of the screen.
       </p>
-      <a href="#apcTable_info" style="text-decoration: none;"><span style="text-decoration: underline;">Return to results</span><span style="text-decoration:none !important"> ▲</span></a>
+      <p style="max-width:38rem;" class="mb-4">
+        <strong id="discountOrWaiverInfo">Discount or Waiver Amount</strong> may vary by article type. Check agreement
+        info for details.
+      </p>
+      <p style="max-width:38rem;" class="mb-4">
+        <strong id="coverageYearsInfo">Coverage Years</strong> generally apply to the article's acceptance date, though
+        some publishers may use submission date.
+      </p>
+      <a href="#apcTable_info" style="text-decoration: none;"><span style="text-decoration: underline;">Return to
+          results</span><span style="text-decoration:none !important"> ▲</span></a>
     </div>
   </main>
   <footer class="footer mt-20" id="footer">
@@ -101,7 +115,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5SM1ZM2NQN"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
     gtag('config', 'G-5SM1ZM2NQN');

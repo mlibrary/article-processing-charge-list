@@ -44,6 +44,7 @@
 }
 
 /*DataTables styles*/
+
 /* DataTables sorting arrows */
 /* Override DataTables default styles and opacity */
 table.dataTable thead>tr>th.dt-orderable-asc span.dt-column-order:before, 
@@ -101,6 +102,21 @@ table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order:after {
   color: var(--color-teal-500) !important;
 }
 /* End DataTables sorting arrows */
+
+div.dt-container .dt-paging .dt-paging-button.disabled{
+  display: none;
+}
+
+div.dt-container .dt-paging .dt-paging-button:hover{
+  color: #000 !important;
+  background: var(--color-teal-200);
+  border-color: var(--color-teal-500);
+}
+
+div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-paging .dt-paging-button.current:hover{
+  background: var(--color-teal-100);
+  border-color: var(--color-teal-200);
+}
 
 .dt-search > .dt-input{
     border-radius: 0;
@@ -429,4 +445,36 @@ input[type="checkbox"] {
 h1 {
   max-width: 40ch;
   text-indent: .55rem;
+}
+
+/* skip links */
+/* Must use the below CSS along with the CSS package */
+
+.skip-links {
+  background: var(--color-blue-400);
+  padding: var(--space-small);
+  margin: 0 auto;
+}
+
+.skip-links ul {
+  padding-left: 0;
+}
+
+.skip-links ul li {
+  margin: var(--space-medium) 0;
+  text-align: center;
+}
+
+.skip-links a {
+  color: #fff;
+  padding: var(--space-x-small);
+}
+
+.skip-links:not(:focus-within) {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
 }

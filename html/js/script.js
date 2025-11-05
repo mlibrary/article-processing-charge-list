@@ -63,7 +63,7 @@ $(document).ready(function () {
         layout: {
             top6Start: function () {
                 let filterContainer = document.createElement('div');
-                filterContainer.innerHTML = '<h2>Search and Filter</h2>';
+                filterContainer.innerHTML = '<h2 id="searchandfilter">Search and Filter</h2>';
                 return filterContainer;
             },
             top5Start: {
@@ -148,6 +148,10 @@ $(document).ready(function () {
             search: "Search by Journal Title, or eISSN (i.e., 0010-0285):",
             emptyTable: CreateNoResultsMessage(),
             zeroRecords: CreateNoResultsMessage(),
+        },
+        initComplete: function() {
+            // Add autocomplete attribute to search input
+            $('.dt-search input[type="search"]').attr('autocomplete', 'on');
         },
         columnDefs: [
             {
@@ -312,7 +316,7 @@ function CreateFilterContainer() {
     return `
         <div class="mb-2 mt-2 ms-1 d-flex flex-wrap gap-3">
             <div class="d-flex flex-column">
-                <label>Filter by Publisher:</label>
+                <label for="publisherDropdown">Filter by Publisher:</label>
                 <div class="dropdown d-inline-block me-3">
                 <button class="button button--secondary" type="button" id="publisherDropdown" data-bs-toggle="dropdown"
                     aria-expanded="false">
@@ -328,7 +332,7 @@ function CreateFilterContainer() {
                 </div>
             </div>
             <div class="d-flex flex-column">
-                <label>Filter by Campus:</label>
+                <label for="campusDropdown">Filter by Campus:</label>
                 <div class="dropdown d-inline-block">
                     <button class="button button--secondary" type="button" id="campusDropdown" data-bs-toggle="dropdown"
                         aria-expanded="false">
