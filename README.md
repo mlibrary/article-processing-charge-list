@@ -3,11 +3,20 @@ Presently, this repository is for evaluating javascript table handling libraries
 Generating the data.json file:
 
 ```ruby
-require 'json'
+require "json"
+
+VERSION = "2025-11-07.1"
+HEADER = ["Publisher", "Journal Title", "eISSN", "eISSN Link", "Discount or Waiver", "Campuses Covered", "Coverage Years", "Link to Agreement Info"]
+
 rows = []
-File.open("apc.tsv").each_line { |line| fields = line.chomp.split("\t") ; rows << fields[0..3] + fields[6..8] }
-rows.shift
-rows.compact!
-rows.reject! { |row| row.empty? || row.all?(&:empty?) }
-File.write("data.json", {data: rows.map { |row| row.map { |field| field.empty? ? nil : field }}}.to_json)
+File.open("apc.tsv").each_line { |line| fields = line.chomp.split("\t") ; rows << fields }
+header = rows.shift
+if HEADER.join("") == header.join("")
+  rows.compact!
+  rows.reject! { |row| row.empty? || row.all?(&:empty?) }
+  File.write("html/data.json", {
+    header: HEADER,
+    version: VERSION,
+    data: rows.map { |row| row.map { |field| field.empty? ? nil : field }}}.to_json)
+end
 ```

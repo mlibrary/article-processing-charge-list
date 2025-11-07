@@ -5,10 +5,10 @@ $(document).ready(function () {
         { title: "Journal Title", data: 1 },
         { title: "eISSN", data: 2 },
         { title: "Publisher", data: 0 },
-        { title: "Discount or Waiver Amount", data: 3 },
-        { title: "Campuses Covered", data: 4 },
+        { title: "Discount or Waiver Amount", data: 4 },
+        { title: "Campuses Covered", data: 5 },
         { title: "Coverage Years", data: 6 },
-        { title: "Agreement Info", data: 5 }
+        { title: "Agreement Info", data: 7 }
     ];
 
     var selectedPublishers = [];
@@ -22,8 +22,8 @@ $(document).ready(function () {
             return true;
         }
         var publisher = rawData[dataIndex] ? rawData[dataIndex][0] : '';
-        var campuses = rawData[dataIndex] ? rawData[dataIndex][4] : '';
-        var amountFunded = rawData[dataIndex] ? rawData[dataIndex][3] : '';
+        var campuses = rawData[dataIndex] ? rawData[dataIndex][5] : '';
+        var amountFunded = rawData[dataIndex] ? rawData[dataIndex][4] : '';
         // Publisher filter
         if (selectedPublishers.length === 0) {
             return false;
@@ -124,7 +124,7 @@ $(document).ready(function () {
                 if (selectedCampuses.length === 0) {
                     var allCampuses = [];
                     json.data.forEach(function (row) {
-                        var campuses = row[4];
+                        var campuses = row[5];
                         if (campuses) {
                             campuses.split(/,\s*/).forEach(function (campus) {
                                 if (campus && allCampuses.indexOf(campus) === -1) {
@@ -141,7 +141,7 @@ $(document).ready(function () {
         columns: columns,
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50],
-        order: [[1, 'asc']],
+        order: [[0, 'asc']],
         autoWidth: false,
         responsive: true,
         language: {
@@ -157,6 +157,15 @@ $(document).ready(function () {
             {
                 "targets": [3, 5, 6],
                 "searchable": false
+            },
+            {
+                "targets": 1,
+                "render": function (data, type, row) {
+                    if (type === 'display' && data && row[3]) {
+                        return '<a href="' + row[3] + '" target="_blank">' + data + '<span class="material-symbols-rounded">open_in_new</span></a>';
+                    }
+                    return data;
+                }
             },
             {
                 "targets": 6,
@@ -178,7 +187,7 @@ $(document).ready(function () {
     function populateCampusFilters(data) {
         var campuses = [];
         data.forEach(function (row) {
-            var campusField = row[4];
+            var campusField = row[5];
             if (campusField) {
                 campusField.split(/,\s*/).forEach(function (campus) {
                     if (campus && campuses.indexOf(campus) === -1) {
