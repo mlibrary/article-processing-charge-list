@@ -5,10 +5,10 @@ $(document).ready(function () {
         { title: "Journal Title", data: 1 },
         { title: "eISSN", data: 2 },
         { title: "Publisher", data: 0 },
-        { title: "Discount or Waiver Amount", data: 3 },
-        { title: "Campuses Covered", data: 4 },
+        { title: "Discount or Waiver Amount", data: 4 },
+        { title: "Campuses Covered", data: 5 },
         { title: "Coverage Years", data: 6 },
-        { title: "Agreement Info", data: 5 }
+        { title: "Agreement Info", data: 7 }
     ];
 
     var selectedPublishers = [];
@@ -141,7 +141,7 @@ $(document).ready(function () {
         columns: columns,
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50],
-        order: [[1, 'asc']],
+        order: [[0, 'asc']],
         autoWidth: false,
         responsive: true,
         language: {
@@ -157,6 +157,15 @@ $(document).ready(function () {
             {
                 "targets": [3, 5, 6],
                 "searchable": false
+            },
+            {
+                "targets": 1,
+                "render": function (data, type, row) {
+                    if (type === 'display' && data && row[3]) {
+                        return '<a href="' + row[3] + '" target="_blank">' + data + '<span class="material-symbols-rounded">open_in_new</span></a>';
+                    }
+                    return data;
+                }
             },
             {
                 "targets": 6,
