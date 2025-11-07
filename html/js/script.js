@@ -22,8 +22,8 @@ $(document).ready(function () {
             return true;
         }
         var publisher = rawData[dataIndex] ? rawData[dataIndex][0] : '';
-        var campuses = rawData[dataIndex] ? rawData[dataIndex][4] : '';
-        var amountFunded = rawData[dataIndex] ? rawData[dataIndex][3] : '';
+        var campuses = rawData[dataIndex] ? rawData[dataIndex][5] : '';
+        var amountFunded = rawData[dataIndex] ? rawData[dataIndex][4] : '';
         // Publisher filter
         if (selectedPublishers.length === 0) {
             return false;
@@ -124,7 +124,7 @@ $(document).ready(function () {
                 if (selectedCampuses.length === 0) {
                     var allCampuses = [];
                     json.data.forEach(function (row) {
-                        var campuses = row[4];
+                        var campuses = row[5];
                         if (campuses) {
                             campuses.split(/,\s*/).forEach(function (campus) {
                                 if (campus && allCampuses.indexOf(campus) === -1) {
@@ -187,7 +187,7 @@ $(document).ready(function () {
     function populateCampusFilters(data) {
         var campuses = [];
         data.forEach(function (row) {
-            var campusField = row[4];
+            var campusField = row[5];
             if (campusField) {
                 campusField.split(/,\s*/).forEach(function (campus) {
                     if (campus && campuses.indexOf(campus) === -1) {
