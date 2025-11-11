@@ -1,0 +1,41 @@
+---
+name: Update Data
+on:
+  schedule:
+  - cron: "0 6 * * *"  # Runs daily at 06:00 UTC
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Construct the target branch name
+      id: date
+      run: echo "::set-output name=branch::$(date +'%Y-%m-%d-update-data-json')"
+
+    - name: Checkout Repository
+      uses: actions/checkout@v5
+        
+    - name: Docker Compose Build
+      run: docker compose build data
+
+    - name: Run Docker Container
+      run: docker compose run -e GOOGLE_DRIVE_CREDENTIALS --rm data
+      env:
+        GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+
+    - name: Copy data.json to S3
+      run: aws s3 cp ${{ vars.SOURCE_DIR }}/data.json s3://${{ vars.AWS_S3_BUCKET }}/data.json
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ vars.AWS_REGION }}
+
+    - uses: gr2m/create-or-update-pull-request-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        title: "Update data.json"
+        body: "Update data.json"
+        branch: ${{ steps.date.outputs.branch }}
+        reviewers: bertrama
+        path: html/data.json
+        commit-message: "Update data.json"

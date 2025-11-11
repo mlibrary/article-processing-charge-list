@@ -10,10 +10,13 @@ services:
     - ./html:/usr/local/apache2/htdocs
 
   data:
-    image: ruby:3.4
-    working_dir: /usr/src/app
-    command: irb
+    build:
+      target: data
+      context: .
     volumes:
-    - .:/usr/src/app
+    - .:/app
+    - bundle:/bundle
     profiles: ["data"]
-    user: "${UID:-1000}:${GID:-1000}"
+
+volumes:
+  bundle:
