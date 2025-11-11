@@ -2,7 +2,7 @@
 name: Update Data
 on:
   schedule:
-  - cron: "0 6 * * *"  # Runs daily at 06:00 UTC
+  - cron: "15 * * * *"  # Runs daily at 06:00 UTC
 jobs:
   update-data:
     runs-on: ubuntu-latest
