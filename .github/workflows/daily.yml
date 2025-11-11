@@ -20,7 +20,7 @@ jobs:
       run: docker compose build data
 
     - name: Run Docker Container
-      run: docker compose run -e GOOGLE_DRIVE_CREDENTIALS --rm data
+      run: docker compose run -u $(id -u):$(id -g) -e GOOGLE_DRIVE_CREDENTIALS --rm data
       env:
         GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
 
