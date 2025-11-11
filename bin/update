@@ -5,6 +5,7 @@ Bundler.require
 
 require "json"
 require "base64"
+require "digest"
 
 ENV['GOOGLE_DRIVE_CREDENTIALS'] ||= File.read("credentials.json64").chomp
 
@@ -48,6 +49,7 @@ class Updater
   end
 
   def update
+    before_checksum = Digest::SHA256.file(JSON_FILE).hexdigest
     file = fetch_spreadsheet(SPREADSHEET_NAME)
     puts "Fetched spreadsheet successfully." if @verbose
     data = extract_data(file)
@@ -58,6 +60,13 @@ class Updater
     puts "Data written successfully." if @verbose
     validate_json_file(JSON_FILE)
     puts "Written Data validated successfully." if @verbose
+    after_checksum = Digest::SHA256.file(JSON_FILE).hexdigest
+    if before_checksum == after_checksum
+      puts "No changes detected in data. Update not necessary."
+      exit 1
+    else
+      puts "Update completed successfully."
+    end
   end
 
   def fetch_spreadsheet(spreadsheet_name)
@@ -67,7 +76,7 @@ class Updater
     file_content.rewind
     if file_content.size == 0
       puts "Error: Spreadsheet is empty or could not be fetched."
-      exit 1
+      exit 2
     end
     file_content
   end
@@ -78,7 +87,7 @@ class Updater
     header = rows.shift
     if HEADER.join("") != header.join("")
       "Puts Header Mismatch Detected"
-      exit 2
+      exit 3
     end
     rows.compact!
     rows.reject! { |row| row.empty? || row.all?(&:empty?) }
@@ -96,7 +105,7 @@ class Updater
   def validate_data(data)
     unless JSON::Validator.validate(SCHEMA, data)
       puts "Preflight Data Validation failed."
-      exit 3
+      exit 4
     end
   end
 
@@ -104,10 +113,9 @@ class Updater
     validate = JSON.parse(IO.read(json_file))
     unless JSON::Validator.validate(SCHEMA, validate)
       puts "Data File Validation failed"
-      exit 4
+      exit 5
     end
   end
 end
 
 Updater.new(StringIO.new(Base64.decode64(ENV["GOOGLE_DRIVE_CREDENTIALS"]))).update
-puts "Update completed successfully."

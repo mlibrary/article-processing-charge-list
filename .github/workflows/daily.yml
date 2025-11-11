@@ -38,6 +38,6 @@ jobs:
         title: "Update data.json"
         body: "Update data.json"
         branch: ${{ steps.date.outputs.branch }}
-        reviewers: bertrama
+        reviewers: bertrama,SalazarJosh
         path: html/data.json
         commit-message: "Update data.json"
