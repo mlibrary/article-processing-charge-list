@@ -9,12 +9,25 @@ jobs:
   update-data:
     runs-on: ubuntu-latest
     steps:
+    - name: Get Latest release
+      uses: actions/github-script@v6
+      id: get_latest_release
+      with:
+        script: |
+          const latestRelease = await github.rest.repos.getLatestRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+          core.setOutput('tag', latestRelease.data.tag_name);
+
     - name: Construct the target branch name
       id: date
       run: echo "::set-output name=branch::$(date +'%Y-%m-%d-update-data-json')"
 
     - name: Checkout Repository
       uses: actions/checkout@v5
+      with:
+        ref: ${{ steps.get_latest_release.outputs.tag }}
         
     - name: Docker Compose Build
       run: docker compose build data
