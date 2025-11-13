@@ -19,6 +19,13 @@ jobs:
     - name: Docker Compose Build
       run: docker compose build data
 
+    - name: Copy data.json from S3
+      run: aws s3 cp s3://${{ vars.AWS_S3_BUCKET }}/data.json ${{ vars.SOURCE_DIR }}/data.json.s3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ vars.AWS_REGION }}
+
     - name: Run Docker Container
       run: docker compose run -u $(id -u):$(id -g) -e GOOGLE_DRIVE_CREDENTIALS --rm data
       env:

@@ -11,6 +11,7 @@ ENV['GOOGLE_DRIVE_CREDENTIALS'] ||= File.read("credentials.json64").chomp
 
 class Updater
   JSON_FILE = "html/data.json"
+  S3_JSON_FILE = "html/data.json.s3"
   VERSION = "2025-11-07.1"
   HEADER = ["Publisher", "Journal Title", "eISSN", "eISSN Link", "Discount or Waiver", "Campuses Covered", "Coverage Years", "Link to Agreement Info"]
   NULL_ALLOWED = ["eISSN", "eISSN Link" ]
@@ -61,9 +62,13 @@ class Updater
     validate_json_file(JSON_FILE)
     puts "Written Data validated successfully." if @verbose
     after_checksum = Digest::SHA256.file(JSON_FILE).hexdigest
+    s3_checksum = File.exist?(JSON_FILE + ".s3") ?  Digest::SHA256.file(S3_JSON_FILE).hexdigest : ""
     if before_checksum == after_checksum
       puts "No changes detected in data. Update not necessary."
       exit 1
+    else if after_checksum == s3_checksum
+      puts "No changes detected compared to S3 version. Update not necessary."
+      exit 2
     else
       puts "Update completed successfully."
     end
@@ -76,7 +81,7 @@ class Updater
     file_content.rewind
     if file_content.size == 0
       puts "Error: Spreadsheet is empty or could not be fetched."
-      exit 2
+      exit 3
     end
     file_content
   end
@@ -87,7 +92,7 @@ class Updater
     header = rows.shift
     if HEADER.join("") != header.join("")
       "Puts Header Mismatch Detected"
-      exit 3
+      exit 4
     end
     rows.compact!
     rows.reject! { |row| row.empty? || row.all?(&:empty?) }
@@ -105,7 +110,7 @@ class Updater
   def validate_data(data)
     unless JSON::Validator.validate(SCHEMA, data)
       puts "Preflight Data Validation failed."
-      exit 4
+      exit 5
     end
   end
 
@@ -113,7 +118,7 @@ class Updater
     validate = JSON.parse(IO.read(json_file))
     unless JSON::Validator.validate(SCHEMA, validate)
       puts "Data File Validation failed"
-      exit 5
+      exit 6
     end
   end
 end
