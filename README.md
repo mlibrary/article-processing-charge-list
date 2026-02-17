@@ -1,22 +1,12 @@
-Presently, this repository is for evaluating javascript table handling libraries in preparation for writing an MPP about supporting a projet that is to display tabular data with ~ 13k rows.
+This repository hosts the code that prepares and updates apc.lib.umich.edu from source data.
+Along with the html and javascript used to present [apc.lib.umich.edu](https://apc.lib.umich.edu).
 
-Generating the data.json file:
+## Overview
+The ruby code in `bin/update` builds `html/data.json`.
 
-```ruby
-require "json"
+Otherwise:
+`html/index.html`  
+`html/js`  
+`html/css`  
 
-VERSION = "2025-11-07.1"
-HEADER = ["Publisher", "Journal Title", "eISSN", "eISSN Link", "Discount or Waiver", "Campuses Covered", "Coverage Years", "Link to Agreement Info"]
-
-rows = []
-File.open("apc.tsv").each_line { |line| fields = line.chomp.split("\t") ; rows << fields }
-header = rows.shift
-if HEADER.join("") == header.join("")
-  rows.compact!
-  rows.reject! { |row| row.empty? || row.all?(&:empty?) }
-  File.write("html/data.json", {
-    header: HEADER,
-    version: VERSION,
-    data: rows.map { |row| row.map { |field| field.empty? ? nil : field }}}.to_json)
-end
-```
+Are are static content.  Data is loaded all at once, and processed in-browser. 
