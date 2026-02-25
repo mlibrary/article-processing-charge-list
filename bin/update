@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+# Copyright (c) 2026, Regents of the University of Michigan. All rights reserved.
+# Licensed under the terms of LICENSE.txt.
+
 require "bundler/setup"
 Bundler.require
 

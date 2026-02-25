@@ -35,3 +35,6 @@ Otherwise everything is served as static content.  This can be CloudFront, an S3
 * `html/css`  
 
 Are all static content.  Data is loaded in the browser, all at once, and processed in-browser.  This is acceptable for the current scale of the data involved. 
+
+Copyright (c) 2026, Regents of the University of Michigan. All rights reserved.
+
