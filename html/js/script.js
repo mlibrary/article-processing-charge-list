@@ -6,7 +6,7 @@
  * data.json structure:
  *   {
  *     "header": [...],   // Human-readable column names (not used directly by DataTables)
- *     "version": "...",  // Datestamp of the last data update
+ *     "version": "...",  // An string representing when the code generating the data was last updated.
  *     "data": [          // Array of rows; each row is an array with these indices:
  *       [0] Publisher
  *       [1] Journal Title
