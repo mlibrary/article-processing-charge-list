@@ -101,7 +101,7 @@
     </div>
     <div class="footer__disclaimer">
       <div class="viewport-container">
-        <p>© 2025, Regents of the University of Michigan</p>
+        <p>© <span id="year">2026</span>, Regents of the University of Michigan</p>
         <p>
           Built with the
           <a href="https://design-system.lib.umich.edu/">U-M Library Design System</a>
@@ -117,6 +117,9 @@
     gtag('js', new Date());
 
     gtag('config', 'G-5SM1ZM2NQN');
+
+    const year = new Date().getFullYear();
+    document.getElementById('year').textContent = year;
   </script>
   <script type="module"
     src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"></script>

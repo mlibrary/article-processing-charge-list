@@ -1,6 +1,36 @@
+/**
+ * script.js
+ *
+ * Fetches journal APC data from data.json and renders it in a DataTables table.
+ *
+ * data.json structure:
+ *   {
+ *     "header": [...],   // Human-readable column names (not used directly by DataTables)
+ *     "version": "...",  // Datestamp of the last data update
+ *     "data": [          // Array of rows; each row is an array with these indices:
+ *       [0] Publisher
+ *       [1] Journal Title
+ *       [2] eISSN
+ *       [3] eISSN Link (URL to ISSN portal)
+ *       [4] Discount or Waiver Amount
+ *       [5] Campuses Covered (comma-separated string, e.g. "Ann Arbor, Dearborn")
+ *       [6] Coverage Years
+ *       [7] Link to Agreement Info (URL)
+ *     ]
+ *   }
+ *
+ * Dependencies: jQuery, DataTables 2.x, Bootstrap 5
+ */
+
 $(document).ready(function () {
+    // rawData holds the full dataset fetched from data.json.
+    // It is populated inside the DataTables ajax.dataSrc callback and used
+    // by the custom search filter to access row fields by index.
     var rawData = [];
-    var header = ["Journal Title", "eISSN", "Publisher", "Discount or Waiver Amount", "Campuses Covered", "Coverage Years", "Agreement Info"];
+    // Column definitions map each visible column to its index in the data.json row array.
+    // The 'data' property is the numeric index of the corresponding field in each row.
+    // Note: index 3 (eISSN Link URL) is intentionally omitted here because it is
+    // accessed inside a columnDef render function for the eISSN column instead.
     var columns = [
         { title: "Journal Title", data: 1 },
         { title: "eISSN", data: 2 },
@@ -11,27 +41,43 @@ $(document).ready(function () {
         { title: "Agreement Info", data: 7 }
     ];
 
+    // Filter state variables.
+    // selectedPublishers / selectedCampuses hold the values currently checked in the
+    // dropdown filters.  They start empty and are populated after data loads.
+    // allPublishersCount / allCampusesCount store the total number of unique values so
+    // renderFilterSummary can detect when the user has changed the defaults.
     var selectedPublishers = [];
     var selectedCampuses = [];
     var allPublishersCount = 0;
     var allCampusesCount = 0;
-    var onlyFullyFunded = false; // state for 100% funded filter
+    var onlyFullyFunded = false; // tracks whether the "Show only 100% covered" checkbox is active
 
+    // Register a custom search function with DataTables.
+    // DataTables calls this for every row on each draw; returning true keeps the row
+    // visible, false hides it.  The guard on settings.nTable.id ensures this filter
+    // only runs for #apcTable and not any other DataTables instance on the page.
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         if (settings.nTable.id !== 'apcTable') {
             return true;
         }
+        // Read raw field values directly from rawData using dataIndex (the row's
+        // position in the full dataset) rather than the DataTables-processed 'data'
+        // array, so we always have the original unformatted strings.
         var publisher = rawData[dataIndex] ? rawData[dataIndex][0] : '';
         var campuses = rawData[dataIndex] ? rawData[dataIndex][5] : '';
         var amountFunded = rawData[dataIndex] ? rawData[dataIndex][4] : '';
-        // Publisher filter
+
+        // Publisher filter: hide the row if no publishers are selected, or if this
+        // row's publisher is not in the selected list.
         if (selectedPublishers.length === 0) {
             return false;
         }
         if (selectedPublishers.indexOf(publisher) === -1) {
             return false;
         }
-        // Campus filter
+
+        // Campus filter: a row passes if at least one of its campuses (the field is a
+        // comma-separated string) appears in the selectedCampuses list.
         if (selectedCampuses.length === 0) {
             return false;
         }
@@ -40,7 +86,12 @@ $(document).ready(function () {
             return selectedCampuses.indexOf(campus) !== -1;
         });
         if (!found) return false;
-        // 100% funded filter
+
+        // 100% funded filter: when the checkbox is on, hide any row whose discount
+        // amount is not exactly 100%.  The normalization step strips whitespace,
+        // currency symbols, and commas before testing so values like "100%", "100",
+        // and " 100% " all match consistently.
+        // Most data should be cleaned before import, but this guards against any formatting inconsistencies that might exist.
         if (onlyFullyFunded) {
             var normalized = '' + amountFunded;
             normalized = normalized.trim();
@@ -59,6 +110,9 @@ $(document).ready(function () {
         return true;
     });
 
+    // Initialize the DataTables instance on #apcTable.
+    // The table is empty on page load; data is fetched asynchronously via the
+    // ajax option below.  See https://datatables.net/reference/option/ for full docs.
     var table = $('#apcTable').DataTable({
         layout: {
             top6Start: function () {
@@ -105,12 +159,26 @@ $(document).ready(function () {
             bottomStart: 'info',
             bottomEnd: 'paging'
         },
+        // DataTables fetches data.json via AJAX on initialization.
+        // 'dataSrc' is a callback that receives the parsed JSON object and must return
+        // the array of rows that DataTables will render.  This is where we bootstrap
+        // the filter state and build the filter dropdown checkboxes.
         ajax: {
             url: "data.json",
             dataSrc: function (json) {
+                // Cache the full dataset so the custom search function can reference
+                // raw field values (e.g., publisher name at index 0) by row index.
                 rawData = json.data;
+
+                // Build the publisher and campus filter checkboxes from the live data
+                // so they always reflect exactly what is present in data.json.
                 populatePublisherFilters(json.data);
                 populateCampusFilters(json.data);
+
+                // Pre-select all publishers so the table shows everything on first load.
+                // selectedPublishers is empty at this point; we populate it here rather
+                // than at declaration time because the values are not known until the
+                // data arrives.
                 if (selectedPublishers.length === 0) {
                     var allPublishers = [];
                     json.data.forEach(function (row) {
@@ -121,10 +189,12 @@ $(document).ready(function () {
                     });
                     selectedPublishers = allPublishers;
                 }
+
+                // Pre-select all campuses for the same reason as publishers above.
                 if (selectedCampuses.length === 0) {
                     var allCampuses = [];
                     json.data.forEach(function (row) {
-                        var campuses = row[5];
+                        var campuses = row[5]; // index 5 = "Campuses Covered" field
                         if (campuses) {
                             campuses.split(/,\s*/).forEach(function (campus) {
                                 if (campus && allCampuses.indexOf(campus) === -1) {
@@ -135,6 +205,9 @@ $(document).ready(function () {
                     });
                     selectedCampuses = allCampuses;
                 }
+
+                // Return the raw rows array; DataTables maps each row to the 'columns'
+                // definitions using the numeric 'data' indices defined above.
                 return json.data;
             }
         },
@@ -154,10 +227,18 @@ $(document).ready(function () {
             $('.dt-search input[type="search"]').attr('autocomplete', 'on');
         },
         columnDefs: [
+            // Exclude the eISSN Link URL (index 3), Campuses Covered (index 5), and
+            // Coverage Years (index 6) columns from DataTables' built-in search so
+            // users can't accidentally match those fields with the search box.
             {
                 "targets": [3, 5, 6],
                 "searchable": false
             },
+            // eISSN column (target index 1 in the rendered column order, which maps to
+            // data index 2 per the columns array): wrap the eISSN value in a hyperlink
+            // pointing to the ISSN portal URL stored at row index 3.
+            // The 'type === display' guard prevents the link markup from being applied
+            // during sorting/filtering operations where plain text is expected.
             {
                 "targets": 1,
                 "render": function (data, type, row) {
@@ -167,6 +248,9 @@ $(document).ready(function () {
                     return data;
                 }
             },
+            // Agreement Info column (target index 6 in rendered order, data index 7):
+            // render the raw URL as a descriptive link using the publisher name from
+            // row index 0 so the link text is meaningful for screen reader users.
             {
                 "targets": 6,
                 "width": "150px",
@@ -180,10 +264,22 @@ $(document).ready(function () {
         ]
     });
 
+    // When the "Show only 100% covered" checkbox changes, update the filter state
+    // variable and redraw the table so the custom search function picks up the change.
     $(document).on('change', '#onlyFullyFundedCheckbox', function () {
         onlyFullyFunded = this.checked;
         filterTable();
     });
+    /**
+     * populateCampusFilters
+     * Builds the campus filter checkboxes by extracting every unique campus value
+     * from the dataset.  Because the "Campuses Covered" field (index 5) is a
+     * comma-separated string (e.g. "Ann Arbor, Dearborn"), each entry is split
+     * before deduplication.  All checkboxes start in the checked state so the
+     * table shows all rows on first load.
+     *
+     * @param {Array} data - The full rows array from data.json.
+     */
     function populateCampusFilters(data) {
         var campuses = [];
         data.forEach(function (row) {
@@ -214,6 +310,14 @@ $(document).ready(function () {
         $('#campusDropdownContent').html(filtersHtml);
     }
 
+    /**
+     * populatePublisherFilters
+     * Builds the publisher filter checkboxes by extracting every unique publisher
+     * name from index 0 of each row in the dataset.  All checkboxes start checked
+     * so the full table is visible on first load.
+     *
+     * @param {Array} data - The full rows array from data.json.
+     */
     function populatePublisherFilters(data) {
         var publishers = [];
         data.forEach(function (row) {
@@ -240,6 +344,13 @@ $(document).ready(function () {
         $('#publisherDropdownContent').html(filtersHtml);
     }
 
+    /**
+     * filterTable
+     * Reads the current state of all publisher and campus checkboxes, updates the
+     * selectedPublishers and selectedCampuses arrays, then triggers a DataTables
+     * redraw.  The custom search function registered above is re-evaluated for every
+     * row during the redraw, applying the updated filter state.
+     */
     function filterTable() {
         selectedPublishers = [];
         $('.publisher-checkbox:checked').each(function () {
@@ -253,6 +364,14 @@ $(document).ready(function () {
         table.draw();
     }
 
+    /**
+     * renderFilterSummary
+     * Shows or hides the filter summary banner above the table.
+     * The banner is visible only when the active filters differ from the defaults
+     * (i.e., not all publishers/campuses selected, or the 100% filter is on).
+     * It displays a human-readable description of how many publishers and campuses
+     * are currently selected.
+     */
     function renderFilterSummary() {
         var pubCount = selectedPublishers.length;
         var campusCount = selectedCampuses.length;
@@ -274,6 +393,8 @@ $(document).ready(function () {
     }
 
 
+    // "Clear all filters" button in the filter summary banner:
+    // resets all checkboxes to checked and clears the 100% funded toggle.
     $(document).on('click', '#clearAllFiltersBtn', function () {
         $('.publisher-checkbox, .campus-checkbox').prop('checked', true);
         $('#onlyFullyFundedCheckbox').prop('checked', false);
@@ -281,14 +402,19 @@ $(document).ready(function () {
         filterTable();
     });
 
+    // Prevent clicks inside the filter dropdown menus from bubbling up to the
+    // Bootstrap dropdown toggle, which would otherwise close the menu immediately
+    // after the user interacts with a checkbox or button.
     $(document).on('click', '#publisherDropdownContent input, #publisherDropdownContent label, #publisherDropdownContent button, #campusDropdownContent input, #campusDropdownContent label, #campusDropdownContent button', function (e) {
         e.stopPropagation();
     });
 
+    // Any individual publisher or campus checkbox change triggers a table redraw.
     $(document).on('change', '.publisher-checkbox, .campus-checkbox', function () {
         filterTable();
     });
 
+    // "Apply All" / "Remove All" buttons inside the publisher dropdown.
     $(document).on('click', '#applyAllPublishers', function (e) {
         e.preventDefault();
         $('.publisher-checkbox').prop('checked', true);
@@ -299,6 +425,8 @@ $(document).ready(function () {
         $('.publisher-checkbox').prop('checked', false);
         filterTable();
     });
+
+    // "Apply All" / "Remove All" buttons inside the campus dropdown.
     $(document).on('click', '#applyAllCampuses', function (e) {
         e.preventDefault();
         $('.campus-checkbox').prop('checked', true);
@@ -310,6 +438,9 @@ $(document).ready(function () {
         filterTable();
     });
 
+    // "Clear all filters" link rendered inside the empty-state message
+    // (CreateNoResultsMessage).  Also clears the DataTables search string so the
+    // user returns to a completely unfiltered view.
     $(document).on('click', '#clearAllFiltersFromEmpty', function (e) {
         e.preventDefault();
         $('.publisher-checkbox, .campus-checkbox').prop('checked', true);
@@ -320,6 +451,18 @@ $(document).ready(function () {
     });
 });
 
+/**
+ * CreateFilterContainer
+ * Returns an HTML string for the publisher/campus dropdown filters and the
+ * "Show only 100% covered" checkbox.  This is injected into the DataTables
+ * layout via the top4Start custom element function defined in the table config.
+ *
+ * The publisher and campus dropdown contents (#publisherDropdownContent and
+ * #campusDropdownContent) are populated dynamically by populatePublisherFilters
+ * and populateCampusFilters after data.json has been fetched.
+ *
+ * @returns {string} HTML markup string.
+ */
 function CreateFilterContainer() {
     return `
         <div class="mb-2 mt-2 ms-1 d-flex flex-wrap gap-3">
@@ -365,6 +508,15 @@ function CreateFilterContainer() {
     `
 }
 
+/**
+ * CreateNoResultsMessage
+ * Returns an HTML string shown by DataTables when no rows match the current
+ * search/filter state (used for both emptyTable and zeroRecords language options).
+ * Includes a "Clear all filters" button that delegates to the
+ * #clearAllFiltersFromEmpty event handler registered above.
+ *
+ * @returns {string} HTML markup string.
+ */
 function CreateNoResultsMessage() {
     return `
         <div style="text-align: center; padding: 2rem;">
