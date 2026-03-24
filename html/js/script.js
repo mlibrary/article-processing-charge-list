@@ -213,7 +213,7 @@ $(document).ready(function () {
         },
         columns: columns,
         pageLength: 10,
-        lengthMenu: [5, 10, 25, 50],
+        lengthMenu: [5, 10, 25, 50, 100],
         order: [[0, 'asc']],
         autoWidth: false,
         responsive: true,
