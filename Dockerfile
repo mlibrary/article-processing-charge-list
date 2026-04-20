@@ -32,7 +32,7 @@ USER ${UNAME}
 
 CMD ["bin/update"]
 
-FROM httpd:latest AS base
+FROM httpd:latest@sha256:bdba5c86022f2d6ad0783168b07fe80541fe45e97b434b13ba8c959a5050fb6b AS base
 
 FROM base AS development
 
