@@ -1,6 +1,6 @@
 # Copyright (c) 2026, Regents of the University of Michigan. All rights reserved.
 # See LICENSE.txt for details.
-FROM ruby:3.3 AS data
+FROM ruby:3.3@sha256:3e82fd89ddb7367531f78392eb8c9742474e791df2fc12a4ac640d01407c6ae0 AS data
 
 ARG UID=1000
 ARG GID=1000

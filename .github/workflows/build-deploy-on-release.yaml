@@ -10,7 +10,7 @@ on:
 jobs:
   build-production:
     name: Build production ${{ github.event.release.tag_name }}
-    uses: mlibrary/platform-engineering-workflows/.github/workflows/build-production.yml@v1
+    uses: mlibrary/platform-engineering-workflows/.github/workflows/build-production.yml@2012bb6a322ad02c45c01372de2f5e2e3d7329ac # v1.6.7
     with:
       image_name: ${{ vars.IMAGE_NAME }}
       tag: ${{ github.event.release.tag_name }}
@@ -23,12 +23,12 @@ jobs:
     name: Sync S3
     steps:
       - name: "Checkout"
-        uses: actions/checkout@master
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v6.0.2
         with:
           ref: ${{ github.event.release.tag_name }}
 
       - name: Sync S3
-        uses: jakejarvis/s3-sync-action@master
+        uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311 # v0.5.1+
         with:
           args: --follow-symlinks --delete
         env:
