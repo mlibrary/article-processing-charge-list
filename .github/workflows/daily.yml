@@ -42,11 +42,13 @@ jobs:
         AWS_REGION: ${{ vars.AWS_REGION }}
 
     - name: Run Docker Container
-      run: docker compose run -u $(id -u):$(id -g) -e GOOGLE_DRIVE_CREDENTIALS --rm data
+      id: update
+      run: docker compose run -u $(id -u):$(id -g) -e GOOGLE_DRIVE_CREDENTIALS --rm data >> $GITHUB_OUTPUT
       env:
         GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
 
     - name: Copy data.json to S3
+      if: steps.update.outputs.changes == 'true'
       run: aws s3 cp ${{ vars.SOURCE_DIR }}/data.json s3://${{ vars.AWS_S3_BUCKET }}/data.json
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -54,6 +56,7 @@ jobs:
         AWS_REGION: ${{ vars.AWS_REGION }}
 
     - uses: gr2m/create-or-update-pull-request-action@b65137ca591da0b9f43bad7b24df13050ea45d1b # v1.10.1
+      if: steps.update.outputs.changes == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
