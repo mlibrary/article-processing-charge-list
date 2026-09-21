@@ -6,6 +6,10 @@ on:
   push:
     paths-ignore:
     - "README.md"
+    - ".github/workflows/build-deploy-on-release.yaml"
+    - ".github/workflows/daily.yml"
+    - ".github/workflows/manual-deploy-production.yml"
+    - ".github/workflows/manual-deploy-testing.yml"
 
 jobs:
   build-unstable:
