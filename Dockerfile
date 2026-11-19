@@ -1,6 +1,6 @@
 # Copyright (c) 2026, Regents of the University of Michigan. All rights reserved.
 # See LICENSE.txt for details.
-FROM ruby:3.3@sha256:3e82fd89ddb7367531f78392eb8c9742474e791df2fc12a4ac640d01407c6ae0 AS data
+FROM ruby:4.0@sha256:4de17567bc750e8a509fd2181e5c5eda3137bbb635b046943277c90271e4ec1c AS data
 
 ARG UID=1000
 ARG GID=1000
@@ -23,6 +23,10 @@ RUN if [ x"${UID}" != x"" ] ; \
 
 RUN mkdir -p ${BUNDLE_PATH} ${APP_HOME}
 
+RUN apt-get update \
+ && apt-get upgrade -y \
+ && rm -rf /var/lib/apt/lists/*
+
 WORKDIR ${APP_HOME}
 COPY --chown=${UNAME}:${UNAME} Gemfile* ${APP_HOME}/
 RUN bundle install
@@ -32,7 +36,11 @@ USER ${UNAME}
 
 CMD ["bin/update"]
 
-FROM httpd:latest@sha256:bdba5c86022f2d6ad0783168b07fe80541fe45e97b434b13ba8c959a5050fb6b AS base
+FROM httpd:latest@sha256:32e9403360ab2f1047523e72f256527fb9aee68b342abf6ad03f0d629157f3d9 AS base
+
+RUN apt-get update \
+ && apt-get upgrade -y \
+ && rm -rf /var/lib/apt/lists/*
 
 FROM base AS development
 

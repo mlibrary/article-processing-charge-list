@@ -3,5 +3,7 @@
 
 source "https://rubygems.org"
 
+gem "logger"
 gem "json-schema"
 gem "google_drive"
+gem "bundler-audit"
